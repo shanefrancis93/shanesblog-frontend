@@ -1,0 +1,200 @@
+{
+  "main": {
+    "id": "c5a75dce9769a766",
+    "type": "split",
+    "children": [
+      {
+        "id": "4a530fbb705d6da2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "11626c02c6fd0b5f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Plant Hospice.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Plant Hospice"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a7089aa9ded6800d",
+    "type": "split",
+    "children": [
+      {
+        "id": "aad3de142c087924",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "75ab33d9f52ff7f1",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "a02ace6416d690e4",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "55f4005a0c3c7008",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "27cbe956bed2da1b",
+    "type": "split",
+    "children": [
+      {
+        "id": "1674bc489e1c98b6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ef6c712fc27f759d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Plant Hospice.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Plant Hospice"
+            }
+          },
+          {
+            "id": "cb08059bfc3ae710",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Plant Hospice.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Plant Hospice"
+            }
+          },
+          {
+            "id": "73ac8ad89fdefd9b",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "8b0bbbaa142c3103",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Plant Hospice.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Plant Hospice"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "11626c02c6fd0b5f",
+  "lastOpenFiles": [
+    "Streams of Consciousness.md",
+    "Untitled.md",
+    "Control.md",
+    "Bell Curve.md",
+    "Washington’s Feet.md",
+    "Winter dour.md",
+    "Spring Clean.md",
+    "Gold to lead.md",
+    "Staccato vent.md",
+    "Great Writers.md",
+    "Dismal Science Fair.md",
+    "Trained Diplomat.md",
+    "Bureaucracy.md",
+    "Tragedy forthright.md",
+    "Jericho Tavern.md",
+    "Flight.md",
+    "Aisle 27.md",
+    "Juneau 10.md",
+    "San Diego.md",
+    "Series of negs.md",
+    "Threaded fates.md",
+    "Bird poem.md",
+    "Leopold in Hell.md",
+    "My lunacy, her orbit.md",
+    "Color study.md",
+    "Selling tomorrows.md"
+  ]
+}
