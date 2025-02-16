@@ -1,4 +1,9 @@
 {
   "css.validate": false,
-  "tailwindCSS.validate": true
-} 
+  "tailwindCSS.validate": true,
+  "cSpell.enabled": false,
+  "cSpell.words": [
+    "oaidalleapiprodscus",
+    "Pinterest"
+  ]
+}

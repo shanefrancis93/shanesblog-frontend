@@ -11,6 +11,20 @@ export default function TechProjects() {
   const projects = [
     {
       id: '1',
+      title: "Sherlock Market Definition Assistant",
+      status: "In Development",
+      tags: ["RAG", "LLM", "Healthcare", "Classification"],
+      description: "An AI-powered system to help classify healthcare products into Sherlock administrative expense market categories using RAG and LLMs. Features intelligent market classification suggestions based on product descriptions.",
+      techStack: ["Python", "FastAPI", "Next.js", "Google Gemini", "Pinecone", "PyPDF2"],
+      highlights: [
+        "PDF processing and structured data extraction",
+        "Vector database for efficient retrieval",
+        "Multi-market classification handling"
+      ],
+      slug: "sherlock-markets-rag"
+    },
+    {
+      id: '2',
       title: "Poetry Analysis with LLMs",
       status: "In Development",
       tags: ["AI", "Poetry", "NLP", "Python"],
@@ -24,7 +38,7 @@ export default function TechProjects() {
       slug: "poetry-llm"
     },
     {
-      id: '2',
+      id: '3',
       title: 'Research Blog Platform',
       status: "Live",
       description: 'A modern, responsive blog platform built with Next.js and React, featuring dark mode, dynamic content loading, and seamless markdown integration.',
