@@ -6,7 +6,7 @@ import { Clipboard, Check } from "lucide-react";
 import { type Poem, fetchPoems } from "../../data/poems";
 import { PoemIllustration } from "./PoemIllustration";
 import { PoemNavigation } from "./PoemNavigation";
-import { AIAnalysisOverlay } from "./AIAnalysisOverlay";
+import PoemAnalysisOverlay from "./PoemAnalysisOverlay";
 
 const CreativeWritingPage = () => {
   const [poems, setPoems] = useState<Poem[]>([]);
@@ -26,6 +26,7 @@ const CreativeWritingPage = () => {
       setIsLoading(true);
       try {
         const fetchedPoems = await fetchPoems();
+        console.log('Fetched poems:', fetchedPoems); // Debug log
         setPoems(fetchedPoems);
       } catch (error) {
         console.error("Error loading poems:", error);
@@ -42,6 +43,13 @@ const CreativeWritingPage = () => {
       setIsExpanded(true);
     }
   }, [currentPoemIndex, autoExpand]);
+
+  useEffect(() => {
+    if (currentPoem) {
+      console.log('Current poem:', currentPoem); // Debug log
+      console.log('LLM Analysis:', currentPoem.llm_analysis); // Debug log
+    }
+  }, [currentPoem]);
 
   // Check if content needs expansion
   useEffect(() => {
@@ -66,13 +74,12 @@ const CreativeWritingPage = () => {
     setTimeout(() => setShowCopyFeedback(false), 2000);
   };
 
-  const handlePoemChange = (newIndex: number) => {
+  const handlePoemChange = async (newIndex: number) => {
+    if (newIndex < 0 || newIndex >= poems.length) return;
     setIsChanging(true);
-    setTimeout(() => {
-      setCurrentPoemIndex(newIndex);
-      if (!autoExpand) setIsExpanded(false);
-      setIsChanging(false);
-    }, 300);
+    setCurrentPoemIndex(newIndex);
+    await new Promise(resolve => setTimeout(resolve, 300));
+    setIsChanging(false);
   };
 
   const nextPoem = () => {
@@ -87,138 +94,142 @@ const CreativeWritingPage = () => {
     }
   };
 
-  const renderContent = () => {
-    if (isLoading) {
-      return (
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-theme-light-primary dark:border-theme-dark-primary" />
-        </div>
-      );
-    }
-
-    if (!currentPoem) {
-      return (
-        <div className="flex justify-center items-center min-h-screen">
-          <p>No poems available</p>
-        </div>
-      );
-    }
-
+  if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto py-16">
-        <h1 className="font-serif text-4xl mb-6 text-theme-light-primary dark:text-theme-dark-primary tracking-tight">
-          Creative Writing
-          <div
-            className="h-1 w-24 bg-gradient-to-r from-[#3d2952] to-[#2c4027] 
-            dark:from-theme-dark-primary dark:to-theme-dark-secondary mt-4 rounded-full"
-          />
-        </h1>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100" />
+      </div>
+    );
+  }
 
-        <p className="text-gray-600 dark:text-gray-400 mb-12 max-w-3xl leading-relaxed">
-          As large language models expand their understanding of subtext, the
-          relationship between AI and poetry becomes especially fascinating.
-          This collection serves as an experiment in how LLMs understand and
-          annotate poetry, presented alongside my own reflections on work I've
-          written since 2018. Each poem includes notes exploring both the human
-          and machine perspectives on the text.
+  return (
+    <Layout>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h1 className="text-4xl font-heading mb-8">Creative Writing</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-8">
+          Welcome to my creative writing space. Here you'll find a collection of my poems,
+          each paired with an AI-generated illustration. The AI analysis feature provides unique
+          machine perspectives on the text.
         </p>
 
-        {/* Add the navigation pane */}
-        <PoemNavigation
-          poems={poems}
-          currentIndex={currentPoemIndex}
-          onPoemChange={handlePoemChange}
-          autoExpand={autoExpand}
-          onAutoExpandChange={setAutoExpand}
-          onShowAIAnalysis={() => setShowAIAnalysis(true)}
-        />
-
-        {/* Book Container */}
-        <div
-          className={`flex bg-cream dark:bg-[#112240] rounded-lg shadow-2xl 
-          ${isExpanded ? "min-h-[800px]" : "h-[800px]"} 
-          border border-gray-200 dark:border-transparent relative 
-          transition-all duration-500 ease-in-out`}
-        >
-          {/* Left Page (Poem) */}
-          <div className="flex-1 p-8 border-r border-gray-300 dark:border-gray-600 font-serif text-lg leading-relaxed relative">
-            <div className="max-w-prose mx-auto h-full flex flex-col">
-              <div className="flex justify-between items-start mb-6">
-                <h2
-                  className={`text-2xl font-heading transition-opacity duration-300 ${
-                    isChanging ? "opacity-0" : "opacity-100"
+        <div className="flex flex-col md:flex-row gap-8 relative">
+          {/* Left column with poem content */}
+          <div className="flex-1">
+            <div className="flex flex-col gap-4">
+              <PoemNavigation
+                poems={poems}
+                currentIndex={currentPoemIndex}
+                onNavigate={handlePoemChange}
+                isChanging={isChanging}
+              />
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setAutoExpand(!autoExpand)}
+                  className={`px-4 py-2 rounded-md transition-colors ${
+                    autoExpand 
+                    ? 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100' 
+                    : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
                   }`}
                 >
-                  {currentPoem.title}
-                </h2>
+                  Auto-Expand
+                </button>
                 <button
-                  onClick={copyToClipboard}
-                  className={`p-2 rounded-full transition-colors ${
-                    showCopyFeedback
-                      ? "bg-green-200 dark:bg-green-800"
-                      : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                  onClick={() => setShowAIAnalysis(!showAIAnalysis)}
+                  className={`px-4 py-2 rounded-md transition-colors ${
+                    showAIAnalysis 
+                    ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
+                    : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
                   }`}
-                  title="Copy poem to clipboard"
                 >
-                  {showCopyFeedback ? (
-                    <>
-                      <Check className="w-5 h-5" />
-                      <span className="absolute -bottom-8 right-0 text-sm bg-gray-800 text-white px-2 py-1 rounded">
-                        Poem copied
-                      </span>
-                    </>
-                  ) : (
-                    <Clipboard className="w-5 h-5" />
-                  )}
+                  AI Analysis
                 </button>
               </div>
-              <div
-                ref={contentRef}
-                className={`whitespace-pre-wrap transition-all duration-700 ease-in-out
-                  ${isExpanded ? "max-h-[2000px]" : "max-h-[600px]"} 
-                  ${
-                    isChanging
-                      ? "opacity-0 translate-y-4"
-                      : "opacity-100 translate-y-0"
-                  }
-                  overflow-hidden`}
-              >
-                {currentPoem.content}
-              </div>
-
-              {!isExpanded && shouldShowExpandButton && (
-                <button
-                  onClick={() => setIsExpanded(true)}
-                  className="absolute bottom-16 left-1/2 transform -translate-x-1/2
-                    bg-gray-200 dark:bg-gray-700 p-2 rounded-full
-                    hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                >
-                  <span className="text-lg">↓</span>
-                </button>
-              )}
             </div>
-          </div>
 
-          {/* Right Page (Illustration) */}
-          <div className="flex-1 relative">
-            {currentPoem && (
-              <div className="absolute inset-0 p-8">
-                <PoemIllustration poem={currentPoem} isChanging={isChanging} />
-                {showAIAnalysis && (
-                  <AIAnalysisOverlay
-                    analysis={currentPoem.analysis}
-                    onClose={() => setShowAIAnalysis(false)}
-                  />
-                )}
+            {/* Book Container */}
+            <div
+              className={`mt-4 flex bg-cream dark:bg-[#112240] rounded-lg shadow-2xl 
+              ${isExpanded ? "min-h-[800px]" : "h-[800px]"} 
+              border border-gray-200 dark:border-transparent relative 
+              transition-all duration-500 ease-in-out`}
+            >
+              {/* Left Page (Poem) */}
+              <div className="flex-1 p-8 border-r border-gray-300 dark:border-gray-600 font-serif text-lg leading-relaxed relative">
+                <div className="max-w-prose mx-auto h-full flex flex-col">
+                  <div className="flex justify-between items-start mb-6">
+                    <h2
+                      className={`text-2xl font-heading transition-opacity duration-300 ${
+                        isChanging ? "opacity-0" : "opacity-100"
+                      }`}
+                    >
+                      {currentPoem?.title}
+                    </h2>
+                    <button
+                      onClick={copyToClipboard}
+                      className={`p-2 rounded-full transition-colors ${
+                        showCopyFeedback
+                          ? "bg-green-200 dark:bg-green-800"
+                          : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                      }`}
+                      title="Copy poem to clipboard"
+                    >
+                      {showCopyFeedback ? (
+                        <>
+                          <Check className="w-5 h-5" />
+                          <span className="absolute -bottom-8 right-0 text-sm bg-gray-800 text-white px-2 py-1 rounded">
+                            Poem copied
+                          </span>
+                        </>
+                      ) : (
+                        <Clipboard className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
+                  <div
+                    ref={contentRef}
+                    className={`whitespace-pre-wrap transition-all duration-700 ease-in-out
+                      ${isExpanded ? "max-h-[2000px]" : "max-h-[600px]"} 
+                      ${
+                        isChanging
+                          ? "opacity-0 translate-y-4"
+                          : "opacity-100 translate-y-0"
+                      }
+                      overflow-hidden`}
+                  >
+                    {currentPoem?.content}
+                  </div>
+
+                  {!isExpanded && shouldShowExpandButton && (
+                    <button
+                      onClick={() => setIsExpanded(true)}
+                      className="absolute bottom-16 left-1/2 transform -translate-x-1/2
+                        bg-gray-200 dark:bg-gray-700 p-2 rounded-full
+                        hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                    >
+                      <span className="text-lg">↓</span>
+                    </button>
+                  )}
+                </div>
               </div>
+
+              {/* Right Page (Illustration) */}
+              <div className="flex-1 relative">
+                <PoemIllustration poem={currentPoem} isChanging={isChanging} />
+              </div>
+            </div>
+
+            {/* AI Analysis Section */}
+            {showAIAnalysis && currentPoem && (
+              <PoemAnalysisOverlay 
+                poem={currentPoem} 
+                onClose={() => setShowAIAnalysis(false)} 
+              />
             )}
           </div>
         </div>
       </div>
-    );
-  };
-
-  return <Layout>{renderContent()}</Layout>;
+    </Layout>
+  );
 };
 
 export default CreativeWritingPage;

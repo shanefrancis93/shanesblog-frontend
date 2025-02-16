@@ -1,11 +1,24 @@
 // frontend/src/data/poems.ts
 
+export type LLMType = 'claude' | 'gpt' | 'gemini';
+
 export interface PoemAnalysis {
-  favoriteLines?: string;
-  interpretation?: string;
-  literaryDevices?: string;
-  challengingAspects?: string;
-  emotionalImpact?: string;
+  favorite_lines: string;
+  interpretation: string;
+  criticism: string;
+  emotional_impact: string;
+  image_prompt: string;
+}
+
+export interface LLMEntry {
+  analysis: PoemAnalysis;
+  timestamp?: string;
+  version?: string;
+  image_url?: string | null;
+}
+
+export type LLMAnalysis = {
+  [K in LLMType]?: LLMEntry;
 }
 
 export interface Poem {
@@ -15,7 +28,7 @@ export interface Poem {
   illustration?: string;
   notes?: string;
   date?: string;
-  analysis?: PoemAnalysis;
+  llm_analysis?: LLMAnalysis;
 }
 
 // This will be populated by the API call

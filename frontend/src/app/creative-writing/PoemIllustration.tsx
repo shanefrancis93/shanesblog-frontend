@@ -30,26 +30,26 @@ export const PoemIllustration: React.FC<PoemIllustrationProps> = ({
   }
 
   return (
-    <div className="absolute inset-0">
+    <div className="w-full h-full relative">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100" />
         </div>
       )}
-      <div className="relative w-full h-full">
-        <Image
-          src={poem.illustration}
-          alt={`Illustration for ${poem.title}`}
-          fill
-          className={`
-            object-contain transition-all duration-300
-            ${isLoading ? "opacity-0" : "opacity-100"}
-            ${isChanging ? "opacity-0" : "opacity-100"}
-          `}
-          onLoadingComplete={() => setIsLoading(false)}
-          onError={() => setImageError(true)}
-        />
-      </div>
+      <Image
+        src={poem.illustration}
+        alt={`Illustration for ${poem.title}`}
+        fill
+        sizes="(max-width: 768px) 100vw, 50vw"
+        priority
+        className={`
+          object-contain transition-all duration-300
+          ${isLoading ? "opacity-0" : "opacity-100"}
+          ${isChanging ? "opacity-0" : "opacity-100"}
+        `}
+        onLoad={() => setIsLoading(false)}
+        onError={() => setImageError(true)}
+      />
     </div>
   );
 };

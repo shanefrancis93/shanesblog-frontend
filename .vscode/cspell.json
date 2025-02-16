@@ -1,0 +1,26 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "words": [
+        "frontmatter",
+        "Frontmatter",
+        "writeups",
+        "Xtratuf",
+        "generativeai",
+        "genai",
+        "dotenv",
+        "llms",
+        "aiohttp",
+        "pyyaml",
+        "asyncio",
+        "gitpython",
+        "shanesblog"
+    ],
+    "flagWords": [],
+    "ignorePaths": [
+        "node_modules/**",
+        "dist/**",
+        "build/**",
+        ".git/**"
+    ]
+}

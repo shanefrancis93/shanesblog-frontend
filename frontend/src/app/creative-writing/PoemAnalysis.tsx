@@ -15,7 +15,7 @@ export const PoemAnalysis: React.FC<PoemAnalysisProps> = ({ analysis }) => {
 
   const questions = [
     {
-      key: "favoriteLines" as const,
+      key: "favorite_lines" as const,
       question: "What lines stand out as particularly meaningful?",
     },
     {
@@ -23,15 +23,11 @@ export const PoemAnalysis: React.FC<PoemAnalysisProps> = ({ analysis }) => {
       question: "How do you interpret this poem?",
     },
     {
-      key: "literaryDevices" as const,
-      question: "What literary devices are employed?",
+      key: "criticism" as const,
+      question: "What criticism can be made of this poem?",
     },
     {
-      key: "challengingAspects" as const,
-      question: "What aspects of the poem are most challenging?",
-    },
-    {
-      key: "emotionalImpact" as const,
+      key: "emotional_impact" as const,
       question: "What emotional response does this poem evoke?",
     },
   ];

@@ -42,6 +42,7 @@ export async function GET() {
             illustration: data.illustration || `/images/poems/${slug}.webp`,
             notes: data.notes || "",
             date: data.date || new Date().toISOString().split("T")[0], // Default to current date if none provided
+            llm_analysis: data.llm_analysis || null,
           };
         } catch (error: any) {
           // Just skip any files that can't be processed

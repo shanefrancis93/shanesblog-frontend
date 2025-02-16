@@ -33,7 +33,7 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="container mx-auto px-4 py-6 text-center 
           font-serif text-theme-light-primary dark:text-theme-dark-primary
           text-sm tracking-wide">
-          © {new Date().getFullYear()} Shane's Blog. All rights reserved.
+          {new Date().getFullYear()} Shane's Blog. All rights reserved.
         </div>
       </footer>
     </div>

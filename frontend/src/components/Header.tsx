@@ -18,7 +18,7 @@ const Header = () => {
         {/* Navigation */}
         <nav className="py-4">
           <div className="flex items-center">
-            {['Home', 'Creative Writing', 'About'].map((item, index, array) => (
+            {['Home', 'Tech Projects', 'Creative Writing', 'About'].map((item, index, array) => (
               <span key={item} className="flex items-center">
                 <Link 
                   href={item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`}
