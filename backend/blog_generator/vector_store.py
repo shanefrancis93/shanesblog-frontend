@@ -480,6 +480,21 @@ class VectorStore:
         self.client.delete_collection(collection_name)
         print(f"Deleted collection: {collection_name}")
 
+    def _sanitize_metadata(self, metadata: Dict) -> Dict:
+        """
+        Sanitize metadata to ensure it's compatible with ChromaDB.
+        ChromaDB only accepts str, int, or float values.
+        """
+        sanitized = {}
+        for key, value in metadata.items():
+            if isinstance(value, (str, int, float)):
+                sanitized[key] = value
+            elif isinstance(value, datetime):
+                sanitized[key] = value.isoformat()
+            else:
+                sanitized[key] = str(value)
+        return sanitized
+
 # Example usage
 if __name__ == "__main__":
     # Initialize vector store with persistence
