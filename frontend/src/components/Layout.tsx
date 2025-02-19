@@ -12,20 +12,20 @@ const Layout = ({ children }: LayoutProps) => {
       <Header />
       
       {/* Divider Image */}
-      <div className="w-full flex justify-center pb-2">
+      <div className="w-full flex justify-center pb-2 pt-6">
         <img 
           src="/images/light-divider.png" 
           alt="decorative divider"
-          className="h-40 object-contain block dark:hidden"
+          className="h-40 object-contain block dark:hidden opacity-80"
         />
         <img 
           src="/images/dark-divider.png" 
           alt="decorative divider"
-          className="h-40 object-contain hidden dark:block"
+          className="h-40 object-contain hidden dark:block opacity-80"
         />
       </div>
 
-      <main className="container mx-auto px-4 max-w-6xl">
+      <main className="container mx-auto px-4 py-8 max-w-6xl">
         {children}
       </main>
       

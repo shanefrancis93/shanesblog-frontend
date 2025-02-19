@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { ThemeToggle } from './ThemeToggle';
+import { Button } from './ui/button';
 
 const navigationItems = [
   { name: 'Home', path: '/' },
@@ -11,7 +13,7 @@ const navigationItems = [
 const Header = () => {
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200/20 dark:border-transparent 
-      bg-cream/80 dark:bg-black/80 backdrop-blur-sm">
+      bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 flex flex-col items-center max-w-6xl">
         {/* Title */}
         <Link 

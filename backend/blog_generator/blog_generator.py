@@ -1,219 +1,320 @@
 import os
 import yaml
+import logging
 from datetime import datetime
-from typing import Dict, List, Optional
-import json
 from pathlib import Path
+from typing import Dict, List, Optional
+from enum import Enum
+import json
+import dotenv
+import asyncio
 import openai
-from openai import AsyncOpenAI
-import anthropic
 import google.generativeai as genai
-from dotenv import load_dotenv
+from anthropic import Anthropic
 
-# Load environment variables
-load_dotenv()
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Initialize API clients
-models_config = {
-    "OPENAI_API_KEY": os.getenv("OPENAI_API_KEY"),
-    "ANTHROPIC_API_KEY": os.getenv("ANTHROPIC_API_KEY"),
-    "GEMINI_API_KEY": os.getenv("GEMINI_API_KEY")
-}
+# Load environment variables from .env file
+env_path = Path(__file__).parent / '.env'
+if env_path.exists():
+    dotenv.load_dotenv(env_path)
+else:
+    logger.warning(f".env file not found at {env_path}")
 
-openai_client = AsyncOpenAI(api_key=models_config["OPENAI_API_KEY"])
-claude_client = anthropic.AsyncAnthropic(api_key=models_config["ANTHROPIC_API_KEY"])
-genai.configure(api_key=models_config["GEMINI_API_KEY"])
+# Validate required environment variables
+required_vars = ['OPENAI_API_KEY', 'ANTHROPIC_API_KEY', 'GEMINI_API_KEY']
+missing_vars = [var for var in required_vars if not os.getenv(var)]
+if missing_vars:
+    logger.warning(f"Missing required environment variables: {', '.join(missing_vars)}")
 
-class AIModel:
-    def __init__(self, name: str):
-        self.name = name
-        
-    async def generate_content(self, prompt: str, temperature: float) -> str:
-        """Generate content using the AI model."""
-        raise NotImplementedError
+class LLMType(Enum):
+    CHATGPT = "chatgpt"
+    CLAUDE = "claude"
+    GEMINI = "gemini"
 
-class GPT4Model(AIModel):
-    async def generate_content(self, prompt: str, temperature: float) -> str:
-        """Generate content using GPT-4."""
+class LLMOrchestrator:
+    def __init__(self):
+        """Initialize the LLM orchestrator."""
         try:
-            response = await openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {"role": "system", "content": "You are an expert blog content creator."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=temperature
-            )
-            return response.choices[0].message.content
-        except Exception as e:
-            print(f"Error with GPT-4 generation: {e}")
-            return f"[Error generating content with GPT-4: {str(e)}]"
-
-class ClaudeModel(AIModel):
-    async def generate_content(self, prompt: str, temperature: float) -> str:
-        """Generate content using Claude."""
-        try:
-            response = await claude_client.messages.create(
-                model="claude-3-opus-20240229",
-                max_tokens=1000,
-                temperature=temperature,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
-            )
-            return response.content[0].text
-        except Exception as e:
-            print(f"Error with Claude generation: {e}")
-            return f"[Error generating content with Claude: {str(e)}]"
-
-class GeminiModel(AIModel):
-    async def generate_content(self, prompt: str, temperature: float) -> str:
-        """Generate content using Gemini."""
-        try:
-            model = genai.GenerativeModel('gemini-pro')
-            response = await model.generate_content_async(prompt)
-            return response.text
-        except Exception as e:
-            print(f"Error with Gemini generation: {e}")
-            return f"[Error generating content with Gemini: {str(e)}]"
-
-class BlogPost:
-    def __init__(self, markdown_path: str):
-        self.markdown_path = Path(markdown_path)
-        self.frontmatter: Dict = {}
-        self.content: Dict[str, str] = {}
-        self.load_markdown()
-
-    def load_markdown(self):
-        """Load the markdown file and parse its frontmatter and content."""
-        with open(self.markdown_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-
-        # Split frontmatter and content
-        _, frontmatter, content = content.split('---', 2)
-        self.frontmatter = yaml.safe_load(frontmatter)
-        
-        # Parse content into sections
-        current_section = None
-        current_content = []
-        
-        for line in content.split('\n'):
-            if line.startswith('## '):
-                if current_section:
-                    self.content[current_section] = '\n'.join(current_content).strip()
-                current_section = line[3:].strip()
-                current_content = []
-            elif current_section:
-                current_content.append(line)
+            self.openai_client = openai.OpenAI()
+            self.claude_client = Anthropic()
+            
+            # Initialize Gemini with API key
+            gemini_api_key = os.getenv("GEMINI_API_KEY")
+            if gemini_api_key:
+                genai.configure(api_key=gemini_api_key)
+                self.gemini_client = genai.GenerativeModel('gemini-pro')
+            else:
+                logger.warning("GEMINI_API_KEY not set - Gemini generation will be unavailable")
+                self.gemini_client = None
                 
-        if current_section:
-            self.content[current_section] = '\n'.join(current_content).strip()
+        except Exception as e:
+            logger.error(f"Error initializing LLM clients: {str(e)}")
+            raise
 
-    def save_markdown(self):
-        """Save the current state back to the markdown file."""
-        # Rebuild the markdown content
-        frontmatter = yaml.dump(self.frontmatter, default_flow_style=False)
-        
-        content_parts = []
-        for section in self.frontmatter['sections']:
-            title = section['title']
-            content = self.content.get(title, f"[{section['assignedTo']}'s {title.lower()} will be inserted here]")
-            content_parts.append(f"## {title}\n{content}\n")
+    async def generate_with_chatgpt(self, prompt: str, context: str) -> str:
+        """Generate content using ChatGPT"""
+        try:
+            system_prompt = """You are a professional blog writer with expertise in technology and AI. 
+Write in a conversational, engaging tone while incorporating research citations.
+When referencing research or studies:
+1. Mention the authors' names and year in parentheses
+2. Briefly explain the key findings or insights
+3. Connect the research to the broader discussion
 
-        markdown_content = f"---\n{frontmatter}---\n\n" + '\n'.join(content_parts)
-        
-        with open(self.markdown_path, 'w', encoding='utf-8') as f:
-            f.write(markdown_content)
-
-    def get_section_prompt(self, section: Dict) -> str:
-        """Generate a prompt for a specific section."""
-        topic = self.frontmatter.get('topic', {})
-        model_info = next(
-            (m for m in self.frontmatter['aiMetadata']['models'] 
-             if m['name'] == section['assignedTo']),
-            {'role': 'content_creator'}
-        )
-        
-        base_prompt = f"""You are writing a section for a blog post about {topic.get('title', 'the specified topic')}.
-This is for the '{section['title']}' section.
-
-Your role: {model_info['role']}
-
-Context:
-{topic.get('description', '')}
-
-Section Guidelines:
-1. Write in a clear, engaging style
-2. Use markdown formatting for headers, lists, and emphasis
-3. Focus on this section's specific aspect: {section['title']}
-4. Aim for approximately 300-500 words
-5. Include relevant examples or evidence
-6. Maintain a professional but conversational tone
-
-Previous sections content for context:
-{json.dumps(self.content, indent=2)}
-
-Please provide your analysis and insights for this section.
+Example: "Recent research by Smith and Johnson (2023) found that AI systems trained on diverse datasets showed 40% less bias in decision-making tasks. This suggests that..."
 """
-        return base_prompt
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"Context:\n{context}\n\nPrompt:\n{prompt}"}
+            ]
+            
+            response = await asyncio.to_thread(
+                self.openai_client.chat.completions.create,
+                model="gpt-4-turbo-preview",
+                messages=messages,
+                temperature=0.7,
+                max_tokens=2000
+            )
+            
+            content = response.choices[0].message.content
+            return f"{content}\n\n_(Generated by ChatGPT)_"
+        except Exception as e:
+            logger.error(f"ChatGPT error: {str(e)}")
+            return f"Error with ChatGPT: {str(e)}"
+
+    async def generate_with_claude(self, prompt: str, context: str) -> str:
+        """Generate content using Claude"""
+        try:
+            system_prompt = """You are a professional blog writer with expertise in technology and AI. 
+Write in a conversational, engaging tone while incorporating research citations.
+When referencing research or studies:
+1. Mention the authors' names and year in parentheses
+2. Briefly explain the key findings or insights
+3. Connect the research to the broader discussion
+
+Example: "Recent research by Smith and Johnson (2023) found that AI systems trained on diverse datasets showed 40% less bias in decision-making tasks. This suggests that..."
+"""
+            
+            response = await asyncio.to_thread(
+                self.claude_client.messages.create,
+                model="claude-3-opus-20240229",
+                max_tokens=2000,
+                system=system_prompt,
+                messages=[{
+                    "role": "user",
+                    "content": f"Context:\n{context}\n\nPrompt:\n{prompt}"
+                }],
+                temperature=0.7
+            )
+            
+            content = response.content[0].text
+            return f"{content}\n\n_(Generated by Claude)_"
+        except Exception as e:
+            logger.error(f"Claude error: {str(e)}")
+            return f"Error with Claude: {str(e)}"
+
+    async def generate_with_gemini(self, prompt: str, context: str) -> str:
+        """Generate content using Gemini"""
+        try:
+            # Configure Gemini with API key
+            api_key = os.getenv("GEMINI_API_KEY")
+            if not api_key:
+                raise ValueError("GEMINI_API_KEY environment variable not set")
+            
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel('gemini-pro')
+            
+            system_prompt = """You are a professional blog writer with expertise in technology and AI. 
+Write in a conversational, engaging tone while incorporating research citations.
+When referencing research or studies:
+1. Mention the authors' names and year in parentheses
+2. Briefly explain the key findings or insights
+3. Connect the research to the broader discussion
+
+Example: "Recent research by Smith and Johnson (2023) found that AI systems trained on diverse datasets showed 40% less bias in decision-making tasks. This suggests that..."
+"""
+            
+            prompt_text = f"{system_prompt}\n\nContext:\n{context}\n\nPrompt:\n{prompt}"
+            response = await asyncio.to_thread(
+                model.generate_content,
+                prompt_text
+            )
+            
+            if not response.text:
+                raise ValueError("Empty response from Gemini")
+                
+            content = response.text
+            return f"{content}\n\n_(Generated by Gemini)_"
+        except Exception as e:
+            logger.error(f"Gemini error: {str(e)}")
+            return f"Error with Gemini: {str(e)}"
+
+    async def generate_blog_section(self, llm_type: LLMType, prompt: str, context: str = "") -> str:
+        """Generate blog section content using the specified LLM."""
+        try:
+            if llm_type == LLMType.CHATGPT:
+                return await self.generate_with_chatgpt(prompt, context)
+            elif llm_type == LLMType.CLAUDE:
+                return await self.generate_with_claude(prompt, context)
+            elif llm_type == LLMType.GEMINI:
+                return await self.generate_with_gemini(prompt, context)
+            else:
+                raise ValueError(f"Unsupported LLM type: {llm_type}")
+        except Exception as e:
+            logger.error(f"Error generating content with {llm_type}: {str(e)}")
+            raise
+
+    async def get_context(self, query: str, dataset_ids: List[str] = None) -> str:
+        """Get relevant context from RAGFlow."""
+        # For now, return empty context as RAGFlow integration is pending
+        return ""
 
 class BlogGenerator:
-    def __init__(self, models_config: Dict):
-        self.models_config = models_config
-        self.models = {
-            "GPT-4": GPT4Model("GPT-4"),
-            "Claude-3": ClaudeModel("Claude-3"),
-            "Gemini": GeminiModel("Gemini")
+    def __init__(self):
+        """Initialize the blog generator with configuration."""
+        self.orchestrator = LLMOrchestrator()
+        self.output_dir = Path(__file__).parent / 'processed_text'
+        self.output_dir.mkdir(exist_ok=True)
+
+    def _cleanup_old_versions(self, base_name: str, keep_latest: int = 3):
+        """Cleanup old versions of generated files, keeping the specified number of latest versions."""
+        pattern = f"{base_name}_*.md"
+        files = list(self.output_dir.glob(pattern))
+        # Sort by modification time, newest first
+        files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+        
+        # Keep the specified number of latest files
+        for old_file in files[keep_latest:]:
+            try:
+                old_file.unlink()
+                logger.info(f"Cleaned up old file: {old_file}")
+            except Exception as e:
+                logger.error(f"Error cleaning up {old_file}: {e}")
+
+    def _get_latest_version(self, base_name: str) -> Optional[Path]:
+        """Get the latest version of a generated file."""
+        pattern = f"{base_name}_*.md"
+        files = list(self.output_dir.glob(pattern))
+        if not files:
+            return None
+        # Sort by modification time, newest first
+        files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+        return files[0]
+
+    def _get_llm_type(self, model_name: str) -> LLMType:
+        """Map model name to LLMType."""
+        model_map = {
+            "GPT-4": LLMType.CHATGPT,
+            "Claude-3": LLMType.CLAUDE,
+            "Gemini": LLMType.GEMINI
         }
+        return model_map.get(model_name, LLMType.CHATGPT)
 
-    async def generate_section(self, blog_post: BlogPost, section: Dict) -> str:
+    async def generate_section(self, section_name: str, prompt: str, model_name: str, dataset_ids: List[str]) -> str:
         """Generate content for a specific section using the assigned AI model."""
-        model = self.models[section['assignedTo']]
-        prompt = blog_post.get_section_prompt(section)
+        llm_type = self._get_llm_type(model_name)
         
-        # Get the model's temperature from the blog post metadata
-        model_metadata = next(
-            (m for m in blog_post.frontmatter['aiMetadata']['models'] 
-             if m['name'] == section['assignedTo']),
-            {'temperature': 0.7}  # default temperature
-        )
-        
-        content = await model.generate_content(prompt, model_metadata['temperature'])
-        return content
-
-    async def generate_blog_post(self, markdown_path: str):
-        """Generate content for all sections in the blog post."""
-        blog_post = BlogPost(markdown_path)
-        
-        # Update generation timestamp
-        blog_post.frontmatter['aiMetadata']['generatedAt'] = datetime.now().isoformat()
-        
-        # Generate content for each section in sequence
-        for section in blog_post.frontmatter['sections']:
-            print(f"Generating {section['title']} with {section['assignedTo']}...")
-            content = await self.generate_section(blog_post, section)
-            blog_post.content[section['title']] = content
+        try:
+            # Get relevant context from RAGFlow
+            context = await self.orchestrator.get_context(prompt, dataset_ids)
             
-            # Save after each section to preserve progress
-            blog_post.save_markdown()
-            print(f"Completed {section['title']}")
-        
-        print("Blog post generation complete!")
-        return blog_post
+            # Generate content with context
+            content = await self.orchestrator.generate_blog_section(
+                llm_type=llm_type,
+                prompt=prompt,
+                context=context
+            )
+            
+            return content
+            
+        except Exception as e:
+            logger.error(f"Error generating section {section_name}: {str(e)}")
+            return f"Error generating section {section_name}: {str(e)}"
+
+    async def generate_blog_post(self, template_path: str):
+        """Generate content for all sections in the blog post."""
+        try:
+            template_path = Path(template_path)
+            base_name = template_path.stem
+            
+            # Load and parse template file
+            with open(template_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Parse frontmatter
+            if content.startswith('---'):
+                _, fm, _ = content.split('---', 2)
+                metadata = yaml.safe_load(fm)
+            else:
+                metadata = {"title": "", "date": datetime.now().isoformat()}
+            
+            # Generate content for each section
+            generated_content = {}
+            for section in metadata.get('sections', []):
+                section_name = section.get('name', 'Untitled')
+                logger.info(f"Generating section: {section_name}")
+                
+                content = await self.generate_section(
+                    section_name,
+                    section.get('prompt', ''),
+                    section.get('model', 'GPT-4'),
+                    dataset_ids=[]  # We'll implement this with RAGFlow later
+                )
+                generated_content[section_name] = content
+            
+            # Generate output filename with timestamp
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            output_path = self.output_dir / f"{base_name}_{timestamp}.md"
+            
+            # Create latest symlink
+            latest_link = self.output_dir / f"{base_name}_latest.md"
+            
+            # Prepare output content
+            output_content = ['---']
+            metadata['generated_at'] = datetime.now().isoformat()
+            metadata['template_source'] = str(template_path)
+            metadata['content'] = generated_content
+            output_content.append(yaml.dump(metadata, default_flow_style=False))
+            output_content.append('---\n')
+            
+            # Add generated sections
+            for section_name, section_content in generated_content.items():
+                output_content.append(f'## {section_name}\n')
+                output_content.append(f'{section_content}\n')
+            
+            # Save to file
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(output_content))
+            
+            # Update latest symlink
+            if latest_link.exists():
+                latest_link.unlink()
+            latest_link.symlink_to(output_path)
+            
+            # Cleanup old versions
+            self._cleanup_old_versions(base_name)
+            
+            logger.info(f"Generated blog post saved to: {output_path}")
+            logger.info(f"Latest version symlinked to: {latest_link}")
+            return output_path
+            
+        except Exception as e:
+            logger.error(f"Error generating blog post: {str(e)}")
+            return None
 
 async def main():
-    # Load API keys from environment variables
-    generator = BlogGenerator(models_config)
+    """Main entry point for blog generation."""
+    if len(sys.argv) < 2:
+        print("Please provide the path to a markdown file")
+        return
     
-    # Path to the markdown file
-    markdown_path = input("Enter the path to your markdown template: ")
-    
-    # Generate the blog post
+    markdown_path = sys.argv[1]
+    generator = BlogGenerator()
     await generator.generate_blog_post(markdown_path)
 
 if __name__ == "__main__":
-    import asyncio
+    import sys
     asyncio.run(main())

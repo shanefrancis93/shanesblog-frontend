@@ -1,34 +1,64 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+'use client';
 
-interface CollapsibleSectionProps {
+import { useState } from 'react';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from './ui/collapsible';
+import { BlogSection } from '../app/api/blog/route';
+
+interface Section {
+  id: string;
   title: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
+  content: string;
+  level?: number;
 }
 
-const CollapsibleSection = ({ title, children, defaultOpen = false }: CollapsibleSectionProps) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-  
-  return (
-    <div className="border-b border-theme-light-secondary/20 dark:border-theme-dark-secondary/20">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-4 
-          text-theme-light-primary dark:text-theme-dark-primary 
-          hover:text-theme-light-text dark:hover:text-theme-dark-text 
-          transition-colors duration-300"
-      >
-        <h2 className="text-xl font-serif">{title}</h2>
-        {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-      </button>
-      
-      <div className={`overflow-hidden transition-all duration-300 
-        ${isOpen ? 'max-h-[1000px] opacity-100 mb-6' : 'max-h-0 opacity-0'}`}>
-        {children}
-      </div>
-    </div>
-  );
-};
+interface CollapsibleSectionProps {
+  section?: Section;
+  defaultExpanded?: boolean;
+  className?: string;
+  onToggle?: () => void;
+}
 
-export default CollapsibleSection; 
+export default function CollapsibleSection({ 
+  section,
+  defaultExpanded = false,
+  className = '',
+  onToggle
+}: CollapsibleSectionProps) {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+
+  if (!section) {
+    return null;
+  }
+
+  const handleToggle = () => {
+    setIsExpanded(!isExpanded);
+    if (onToggle) {
+      onToggle();
+    }
+  };
+
+  return (
+    <Collapsible
+      open={isExpanded}
+      onOpenChange={handleToggle}
+      className={`border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden ${className}`}
+    >
+      <CollapsibleTrigger className="w-full px-6 py-4 flex items-center justify-between
+        bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900
+        text-left font-medium transition-colors">
+        <span>{section.title}</span>
+        <span className="text-2xl">
+          {isExpanded ? '−' : '+'}
+        </span>
+      </CollapsibleTrigger>
+      {isExpanded && (
+        <CollapsibleContent className="px-6 py-4">
+          <div 
+            className="prose dark:prose-invert max-w-none"
+            dangerouslySetInnerHTML={{ __html: section.content || '' }}
+          />
+        </CollapsibleContent>
+      )}
+    </Collapsible>
+  );
+}

@@ -1,82 +1,72 @@
-# Blog Generator
+# Blog Generator with RAGFlow Integration
 
-A Python-based tool for generating blog posts using multiple AI models (GPT-4, Claude-3, and Gemini) working together to create rich, multi-perspective content.
+A powerful blog generation system that leverages multiple LLMs (GPT-4, Claude, Gemini) and RAGFlow for context-aware content creation.
+
+## Features
+
+- Multi-model support (OpenAI GPT-4, Anthropic Claude, Google Gemini)
+- RAGFlow integration for context-aware generation
+- Flexible configuration system
+- Markdown-based blog post templates
+- Comprehensive testing infrastructure
+- Async-first architecture
 
 ## Setup
 
-1. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-2. Create a `.env` file with your API keys:
-```env
-OPENAI_API_KEY=your_openai_key
-ANTHROPIC_API_KEY=your_anthropic_key
-GOOGLE_API_KEY=your_google_key
-```
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Copy `.env.example` to `.env` and fill in your API keys:
+   ```bash
+   cp .env.example .env
+   ```
+4. Configure RAGFlow:
+   - Ensure RAGFlow server is running
+   - Set up your datasets in RAGFlow
+   - Update RAGFLOW_DEFAULT_DATASET in .env if needed
 
 ## Usage
 
-1. Create a new blog post template:
+1. Create a blog post template in `test_posts/` directory
+2. Run the test pipeline:
+   ```bash
+   python test_pipeline.py
+   ```
+3. Generated content will be saved in the `processed_text/` directory
+
+## Configuration
+
+- `config.py`: Central configuration for models, RAGFlow, and generation settings
+- `llm_orchestrator.py`: LLM integration and routing
+- `blog_generator.py`: Main blog generation logic
+
+## Testing
+
+Run the test suite:
 ```bash
-cp template.md my_blog_post.md
+python -m pytest
 ```
 
-2. Edit the frontmatter in `my_blog_post.md`:
-   - Update the title, tags, and topic
-   - Adjust the sections as needed
-   - Modify the model assignments if desired
+## Directory Structure
 
-3. Run the generator:
-```bash
-python blog_generator.py
+```
+blog_generator/
+├── config.py              # Configuration settings
+├── llm_orchestrator.py    # LLM integration
+├── blog_generator.py      # Main generation logic
+├── test_pipeline.py       # Pipeline testing
+├── test_posts/           # Blog post templates
+└── processed_text/       # Generated content
 ```
 
-4. When prompted, enter the path to your markdown file:
-```
-Enter the path to your markdown template: my_blog_post.md
-```
+## Contributing
 
-The generator will:
-- Process each section in sequence
-- Use the assigned AI model for each section
-- Save progress after each section
-- Update the markdown file with generated content
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
 
-## Template Structure
+## License
 
-The template uses frontmatter to define:
-- Basic metadata (title, date, tags)
-- Topic details and requirements
-- AI model configurations
-- Section structure and assignments
-- Interactive elements (quizzes)
-
-Example section assignment:
-```yaml
-sections:
-  - id: "introduction"
-    title: "Introduction"
-    level: 1
-    assignedTo: "GPT-4"
-```
-
-## Models and Roles
-
-- **GPT-4**: Primary author, handles introduction, main analysis, and synthesis
-- **Claude-3**: Expert analysis and specialized perspectives
-- **Gemini**: Alternative viewpoints and comparative analysis
-
-Each model can be assigned different temperatures and roles based on the needs of the blog post.
-
-## Output
-
-The generator produces a markdown file that:
-- Preserves the original structure
-- Includes AI-generated content for each section
-- Maintains proper markdown formatting
-- Tracks generation metadata
-- Supports interactive elements
-
-The generated blog post will automatically display AI attribution badges in the frontend when rendered.
+MIT License

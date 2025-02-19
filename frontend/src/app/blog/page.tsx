@@ -4,11 +4,19 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Layout from '../../components/Layout';
 import { Card, CardContent } from '../../components/ui/card';
+import { AIBadge } from '../../components/ui/ai-badge';
 import type { BlogPost } from '../api/blog/route';
+
+function truncateExcerpt(text: string, maxLength: number = 200): string {
+  if (text.length <= maxLength) return text;
+  const truncated = text.slice(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(' ');
+  return lastSpace > 0 ? truncated.slice(0, lastSpace) + '...' : truncated + '...';
+}
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hoveredPost, setHoveredPost] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +28,10 @@ export default function BlogPage() {
         const res = await fetch('/api/blog');
         if (!res.ok) throw new Error('Failed to fetch posts');
         const data = await res.json();
-        setPosts(data);
+        
+        // Filter out unpublished posts
+        const publishedPosts = data.filter(post => post.published && !post.draft);
+        setPosts(publishedPosts);
       } catch (err) {
         console.error('Error loading posts:', err);
         setError(err instanceof Error ? err.message : 'Failed to load posts');
@@ -38,6 +49,18 @@ export default function BlogPage() {
   const filteredPosts = selectedTag
     ? posts.filter(post => post.tags.includes(selectedTag))
     : posts;
+
+  // Sort posts by date in descending order
+  const sortedPosts = [...filteredPosts].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    
+    // Log dates for debugging
+    console.log(`Post ${a.title}: ${a.date} -> ${dateA.toISOString()}`);
+    console.log(`Post ${b.title}: ${b.date} -> ${dateB.toISOString()}`);
+    
+    return dateB.getTime() - dateA.getTime();
+  });
 
   if (loading) {
     return (
@@ -112,7 +135,7 @@ export default function BlogPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {filteredPosts.map((post, index) => (
+            {sortedPosts.map((post) => (
               <Link 
                 key={post.id}
                 href={`/blog/${post.slug}`}
@@ -121,14 +144,14 @@ export default function BlogPage() {
                 <Card 
                   className={`
                     group relative overflow-hidden border-0
-                    backdrop-blur-sm
+                    backdrop-blur-sm h-[300px]
                     bg-white/80 dark:bg-[#112240]
                     hover:bg-white dark:hover:bg-[#1a365d]
                     transition-all duration-300
-                    ${hoveredIndex === index ? 'shadow-2xl' : 'shadow-lg'}
+                    ${hoveredPost === post.id ? 'shadow-2xl' : 'shadow-lg'}
                   `}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
+                  onMouseEnter={() => setHoveredPost(post.id)}
+                  onMouseLeave={() => setHoveredPost(null)}
                 >
                   {/* Decorative elements */}
                   <div className="absolute -right-32 -top-32 w-96 h-96 
@@ -142,40 +165,49 @@ export default function BlogPage() {
                     transition-all duration-700" 
                   />
                   
-                  <CardContent className="relative p-6 md:p-8">
-                    <div className="flex flex-col space-y-4">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-theme-light-primary dark:text-theme-dark-primary font-medium">
-                          {post.date}
-                        </span>
+                  <CardContent className="relative p-6 md:p-8 h-full flex flex-col">
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between text-sm mb-2">
+                        <time className="text-theme-light-primary dark:text-theme-dark-primary font-medium">
+                          {new Date(post.date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </time>
                         <span className="text-theme-light-secondary dark:text-theme-dark-secondary">
                           {post.readingTime}
                         </span>
                       </div>
-                      
-                      <h2 className="text-2xl font-serif 
-                        text-theme-light-text dark:text-theme-dark-text
-                        group-hover:text-theme-light-primary dark:group-hover:text-theme-dark-primary 
-                        transition-colors duration-300">
+
+                      <h2 className="text-2xl font-semibold mb-3 text-theme-light-text dark:text-theme-dark-text">
                         {post.title}
                       </h2>
-                      
-                      <p className="text-theme-light-text/80 dark:text-theme-dark-text/80">
-                        {post.excerpt}
+
+                      <p className="text-theme-light-secondary dark:text-theme-dark-secondary line-clamp-3">
+                        {truncateExcerpt(post.excerpt)}
                       </p>
-                      
-                      <div className="flex flex-wrap gap-2">
+                    </div>
+
+                    <div className="mt-4">
+                      {/* Tags */}
+                      <div className="flex flex-wrap gap-2 mb-4">
                         {post.tags.map(tag => (
-                          <span 
-                            key={tag}
-                            className="px-3 py-1 text-sm rounded-full
-                              bg-gray-100 dark:bg-gray-800
-                              text-theme-light-text dark:text-theme-dark-text"
+                          <span
+                            key={`${post.id}-${tag}`}
+                            className="px-2 py-1 text-sm bg-gray-100 dark:bg-gray-800 rounded"
                           >
                             {tag}
                           </span>
                         ))}
                       </div>
+
+                      {/* AI Badge */}
+                      {post.aiMetadata && (
+                        <div>
+                          <AIBadge metadata={post.aiMetadata} />
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

@@ -5,7 +5,12 @@ Centralizes all configurable parameters and paths.
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 from typing import Dict, Any
+
+# Load environment variables from .env file
+env_path = Path(__file__).parent / '.env'
+load_dotenv(env_path)
 
 # Base paths
 BASE_DIR = Path(__file__).parent
@@ -97,6 +102,45 @@ QUALITY_METRICS = {
     "coherence_weight": 0.6,
     "minimum_quality_score": 0.7
 }
+
+# RAGFlow configuration
+RAGFLOW_CONFIG = {
+    "api_key": "ragflow-FlN2VlNjcyZWU1ZDExZWY4ZTI5MDI0Mm",
+    "base_url": "http://localhost:9380",
+    "similarity_threshold": 0.2,
+    "top_k": 5
+}
+
+# LLM API configurations
+LLM_CONFIGS = {
+    "openai": {
+        "api_key": os.getenv("OPENAI_API_KEY"),
+        "config": MODEL_CONFIGS["gpt4"]
+    },
+    "anthropic": {
+        "api_key": os.getenv("ANTHROPIC_API_KEY"),
+        "config": MODEL_CONFIGS["claude"]
+    },
+    "google": {
+        "api_key": os.getenv("GEMINI_API_KEY"),
+        "config": MODEL_CONFIGS["gemini"]
+    }
+}
+
+# Validate required environment variables
+required_env_vars = {
+    "OPENAI_API_KEY": "OpenAI API key for GPT-4",
+    "ANTHROPIC_API_KEY": "Anthropic API key for Claude",
+    "GEMINI_API_KEY": "Google API key for Gemini",
+    "RAGFLOW_API_KEY": "RAGFlow API key"
+}
+
+missing_vars = [var for var, desc in required_env_vars.items() if not os.getenv(var)]
+if missing_vars:
+    raise EnvironmentError(
+        "Missing required environment variables:\n" +
+        "\n".join(f"- {var}: {required_env_vars[var]}" for var in missing_vars)
+    )
 
 # Prompt templates
 PROMPT_TEMPLATES = {
