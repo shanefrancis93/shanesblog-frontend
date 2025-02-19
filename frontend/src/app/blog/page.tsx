@@ -28,10 +28,7 @@ export default function BlogPage() {
         const res = await fetch('/api/blog');
         if (!res.ok) throw new Error('Failed to fetch posts');
         const data = await res.json();
-        
-        // Filter out unpublished posts
-        const publishedPosts = data.filter(post => post.published && !post.draft);
-        setPosts(publishedPosts);
+        setPosts(data);
       } catch (err) {
         console.error('Error loading posts:', err);
         setError(err instanceof Error ? err.message : 'Failed to load posts');

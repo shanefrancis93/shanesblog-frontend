@@ -33,6 +33,8 @@ export interface BlogPost {
   slug: string;
   sections: BlogSection[];
   aiMetadata?: AIMetadata;
+  published?: boolean;
+  draft?: boolean;
 }
 
 // Blog directories

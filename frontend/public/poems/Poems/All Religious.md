@@ -1,3 +1,6 @@
+---
+published: true
+---
 We’re all religious;
 
 Some of us are just less specific. 

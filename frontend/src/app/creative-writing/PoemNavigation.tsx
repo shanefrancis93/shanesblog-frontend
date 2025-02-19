@@ -32,12 +32,21 @@ export const PoemNavigation: React.FC<PoemNavigationProps> = ({
           <ChevronLeft className="w-6 h-6" />
         </button>
 
-        <div className="text-center flex-1 px-4">
-          <h2 className={`text-xl font-serif mb-2 transition-opacity duration-300 ${isChanging ? 'opacity-0' : 'opacity-100'}`}>
+        <div className="text-center flex-1 px-4 space-y-2">
+          <h2 className={`text-xl font-serif transition-opacity duration-300 ${isChanging ? 'opacity-0' : 'opacity-100'}`}>
             {currentPoem?.title}
           </h2>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Poem {currentIndex + 1} of {poems.length}
+          
+          {currentPoem?.description && (
+            <p className={`text-sm text-gray-600 dark:text-gray-400 italic font-light transition-opacity duration-300 ${
+              isChanging ? 'opacity-0' : 'opacity-100'
+            }`}>
+              {currentPoem.description}
+            </p>
+          )}
+
+          <div className="text-xs text-gray-500 dark:text-gray-500 font-medium">
+            {currentIndex + 1} of {poems.length}
           </div>
         </div>
 

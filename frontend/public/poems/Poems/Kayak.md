@@ -1,3 +1,6 @@
+---
+published: true
+---
 I had a dream I kayaked down a stream next to my home. 
 
 It didn’t feel like a dream, despite unrealities:

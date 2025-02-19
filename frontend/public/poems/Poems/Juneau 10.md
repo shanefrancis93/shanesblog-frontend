@@ -1,3 +1,6 @@
+---
+published: true
+---
 I’ll miss you more than the sum of when we part.
 
   

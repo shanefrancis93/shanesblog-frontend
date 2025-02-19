@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
-import { Clipboard, Check } from "lucide-react";
+import { Clipboard, Check, Image as ImageIcon, Sparkles } from "lucide-react";
 import { type Poem, fetchPoems } from "../../data/poems";
 import { PoemIllustration } from "./PoemIllustration";
+import { PoemAIGallery } from "./PoemAIGallery";
 import { PoemNavigation } from "./PoemNavigation";
 import PoemAnalysisOverlay from "./PoemAnalysisOverlay";
 
@@ -12,13 +13,10 @@ const CreativeWritingPage = () => {
   const [poems, setPoems] = useState<Poem[]>([]);
   const [currentPoemIndex, setCurrentPoemIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [autoExpand, setAutoExpand] = useState(false);
   const [showCopyFeedback, setShowCopyFeedback] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
-  const [shouldShowExpandButton, setShouldShowExpandButton] = useState(false);
+  const [showAIGallery, setShowAIGallery] = useState(false);
   const [showAIAnalysis, setShowAIAnalysis] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
   const currentPoem = poems[currentPoemIndex];
 
   useEffect(() => {
@@ -39,32 +37,11 @@ const CreativeWritingPage = () => {
   }, []);
 
   useEffect(() => {
-    if (autoExpand && contentRef.current) {
-      setIsExpanded(true);
-    }
-  }, [currentPoemIndex, autoExpand]);
-
-  useEffect(() => {
     if (currentPoem) {
       console.log('Current poem:', currentPoem); // Debug log
       console.log('LLM Analysis:', currentPoem.llm_analysis); // Debug log
     }
   }, [currentPoem]);
-
-  // Check if content needs expansion
-  useEffect(() => {
-    const measureContent = () => {
-      const element = contentRef.current;
-      if (element) {
-        const hasOverflow = element.scrollHeight > 600;
-        setShouldShowExpandButton(hasOverflow);
-      }
-    };
-
-    // Measure after content renders
-    const timer = setTimeout(measureContent, 0);
-    return () => clearTimeout(timer);
-  }, [currentPoem?.content]); // Only re-run when poem content changes
 
   const copyToClipboard = () => {
     if (!currentPoem) return;
@@ -82,18 +59,6 @@ const CreativeWritingPage = () => {
     setIsChanging(false);
   };
 
-  const nextPoem = () => {
-    if (currentPoemIndex < poems.length - 1) {
-      handlePoemChange(currentPoemIndex + 1);
-    }
-  };
-
-  const previousPoem = () => {
-    if (currentPoemIndex > 0) {
-      handlePoemChange(currentPoemIndex - 1);
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -108,8 +73,8 @@ const CreativeWritingPage = () => {
         <h1 className="text-4xl font-heading mb-8">Creative Writing</h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
           Welcome to my creative writing space. Here you'll find a collection of my poems,
-          each paired with an AI-generated illustration. The AI analysis feature provides unique
-          machine perspectives on the text.
+          each paired with an AI-generated illustration. Toggle between the main illustration
+          and AI interpretations to see different perspectives on each poem.
         </p>
 
         <div className="flex flex-col md:flex-row gap-8 relative">
@@ -122,16 +87,26 @@ const CreativeWritingPage = () => {
                 onNavigate={handlePoemChange}
                 isChanging={isChanging}
               />
-              <div className="flex justify-end gap-4">
+              <div className="flex justify-end gap-2">
                 <button
-                  onClick={() => setAutoExpand(!autoExpand)}
-                  className={`px-4 py-2 rounded-md transition-colors ${
-                    autoExpand 
-                    ? 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100' 
+                  onClick={() => setShowAIGallery(!showAIGallery)}
+                  className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2 ${
+                    showAIGallery 
+                    ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
                     : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
                   }`}
                 >
-                  Auto-Expand
+                  {showAIGallery ? (
+                    <>
+                      <ImageIcon className="w-4 h-4" />
+                      <span>Show Illustration</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>Show AI Gallery</span>
+                    </>
+                  )}
                 </button>
                 <button
                   onClick={() => setShowAIAnalysis(!showAIAnalysis)}
@@ -147,12 +122,7 @@ const CreativeWritingPage = () => {
             </div>
 
             {/* Book Container */}
-            <div
-              className={`mt-4 flex bg-cream dark:bg-[#112240] rounded-lg shadow-2xl 
-              ${isExpanded ? "min-h-[800px]" : "h-[800px]"} 
-              border border-gray-200 dark:border-transparent relative 
-              transition-all duration-500 ease-in-out`}
-            >
+            <div className="mt-4 flex bg-cream dark:bg-[#112240] rounded-lg shadow-2xl min-h-[800px] border border-gray-200 dark:border-transparent relative">
               {/* Left Page (Poem) */}
               <div className="flex-1 p-8 border-r border-gray-300 dark:border-gray-600 font-serif text-lg leading-relaxed relative">
                 <div className="max-w-prose mx-auto h-full flex flex-col">
@@ -186,35 +156,24 @@ const CreativeWritingPage = () => {
                     </button>
                   </div>
                   <div
-                    ref={contentRef}
-                    className={`whitespace-pre-wrap transition-all duration-700 ease-in-out
-                      ${isExpanded ? "max-h-[2000px]" : "max-h-[600px]"} 
-                      ${
-                        isChanging
-                          ? "opacity-0 translate-y-4"
-                          : "opacity-100 translate-y-0"
-                      }
-                      overflow-hidden`}
+                    className={`whitespace-pre-wrap transition-all duration-700 ease-in-out ${
+                      isChanging
+                        ? "opacity-0 translate-y-4"
+                        : "opacity-100 translate-y-0"
+                    }`}
                   >
                     {currentPoem?.content}
                   </div>
-
-                  {!isExpanded && shouldShowExpandButton && (
-                    <button
-                      onClick={() => setIsExpanded(true)}
-                      className="absolute bottom-16 left-1/2 transform -translate-x-1/2
-                        bg-gray-200 dark:bg-gray-700 p-2 rounded-full
-                        hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                    >
-                      <span className="text-lg">↓</span>
-                    </button>
-                  )}
                 </div>
               </div>
 
-              {/* Right Page (Illustration) */}
+              {/* Right Page (Illustration/AI Gallery) */}
               <div className="flex-1 relative">
-                <PoemIllustration poem={currentPoem} isChanging={isChanging} />
+                {showAIGallery ? (
+                  <PoemAIGallery poem={currentPoem} isChanging={isChanging} />
+                ) : (
+                  <PoemIllustration poem={currentPoem} isChanging={isChanging} />
+                )}
               </div>
             </div>
 

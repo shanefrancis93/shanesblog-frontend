@@ -39,6 +39,7 @@ export async function GET() {
             title: data.title || slug.replace(/-/g, " "),
             content: content.trim(),
             slug: slug,
+            description: data.description || "",
             illustration: data.illustration || `/images/poems/${slug}.webp`,
             notes: data.notes || "",
             date: data.date || new Date().toISOString().split("T")[0], // Default to current date if none provided

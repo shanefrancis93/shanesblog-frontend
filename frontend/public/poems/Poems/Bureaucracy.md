@@ -1,3 +1,7 @@
+---
+published: true
+description: "I’ll file things in triplicate."
+---
 I’ll file things in triplicate
 
 And sign the dotted lines. 
@@ -30,11 +34,6 @@ And observe my surgeons briefly
 
 Before fading into the Deep. 
 
-(1/2)
-
-  
-
-  
 
 Rural Development issues intent 
 
@@ -61,5 +60,3 @@ And with all the oversight I’m caught in,
 We could’ve landed on the moon again 
 
 Or actually killed Bin Laden. 
-
-(2/2)
