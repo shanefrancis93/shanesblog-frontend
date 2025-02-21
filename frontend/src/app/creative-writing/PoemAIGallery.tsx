@@ -40,7 +40,7 @@ export const PoemAIGallery: React.FC<PoemAIGalleryProps> = ({
     <div className="w-full h-full grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
       {Object.entries(poem.llm_analysis).map(([llmType, analysis]) => {
         const { name, color } = llmInfo[llmType as LLMType];
-        if (!analysis.image_prompt) return null;
+        if (!analysis.analysis.image_prompt) return null;
 
         return (
           <div
@@ -63,7 +63,7 @@ export const PoemAIGallery: React.FC<PoemAIGalleryProps> = ({
               />
             </div>
             <div className="p-2 text-xs text-gray-600 dark:text-gray-400 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              {analysis.image_prompt}
+              {analysis.analysis.image_prompt}
             </div>
           </div>
         );

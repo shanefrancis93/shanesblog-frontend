@@ -26,6 +26,7 @@ export interface Poem {
   content: string;
   slug: string;
   illustration?: string;
+  description?: string;  // Optional description from frontmatter
   notes?: string;
   date?: string;
   llm_analysis?: LLMAnalysis;
