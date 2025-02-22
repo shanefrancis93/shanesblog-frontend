@@ -1,5 +1,6 @@
 ---
 published: true
+description: "Feeling cerebral and a sense of rebirth."
 ---
 At last at peace
 
@@ -9,9 +10,10 @@ No doubt due 
 
 To lack of needs.
 
+
 With the sun above 
 
-And sand below
+And sand below,
 
 It’s the breeze above
 
@@ -27,4 +29,4 @@ Warmly, to abide
 
 And stay ashore
 
-During rip tides.
+Else for the rip tides.

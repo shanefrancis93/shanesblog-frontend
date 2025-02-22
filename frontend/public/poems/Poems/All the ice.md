@@ -1,5 +1,6 @@
 ---
 published: true
+description: "Most of my poems were written in Juneau, Alaska, where I felt  I was absorbing ambient advice when I walked through nature."
 ---
 I’d not think twice
 

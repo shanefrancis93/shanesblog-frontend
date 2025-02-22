@@ -26,6 +26,16 @@ const CreativeWritingPage = () => {
         const fetchedPoems = await fetchPoems();
         console.log('Fetched poems:', fetchedPoems); // Debug log
         setPoems(fetchedPoems);
+        
+        // Check URL for poem selection
+        const urlParams = new URLSearchParams(window.location.search);
+        const poemSlug = urlParams.get('poem');
+        if (poemSlug) {
+          const poemIndex = fetchedPoems.findIndex(p => p.slug === poemSlug);
+          if (poemIndex >= 0) {
+            setCurrentPoemIndex(poemIndex);
+          }
+        }
       } catch (error) {
         console.error("Error loading poems:", error);
       } finally {
@@ -122,58 +132,108 @@ const CreativeWritingPage = () => {
             </div>
 
             {/* Book Container */}
-            <div className="mt-4 flex bg-cream dark:bg-[#112240] rounded-lg shadow-2xl min-h-[800px] border border-gray-200 dark:border-transparent relative">
-              {/* Left Page (Poem) */}
-              <div className="flex-1 p-8 border-r border-gray-300 dark:border-gray-600 font-serif text-lg leading-relaxed relative">
-                <div className="max-w-prose mx-auto h-full flex flex-col">
-                  <div className="flex justify-between items-start mb-6">
-                    <h2
-                      className={`text-2xl font-heading transition-opacity duration-300 ${
+            <div className="mt-4 flex flex-col bg-cream dark:bg-[#112240] rounded-lg shadow-2xl min-h-[800px] border border-gray-200 dark:border-transparent relative overflow-hidden">
+              {/* Poem Selection Dropdown */}
+              <div className="px-4 py-2 border-b border-gray-300 dark:border-gray-600">
+                <select
+                  value={currentPoemIndex}
+                  onChange={(e) => {
+                    const newIndex = Number(e.target.value);
+                    if (!isNaN(newIndex) && newIndex >= 0 && newIndex < poems.length) {
+                      setIsChanging(true);
+                      setCurrentPoemIndex(newIndex);
+                      // Update URL to reflect the selected poem
+                      const selectedPoem = poems[newIndex];
+                      if (selectedPoem) {
+                        window.history.pushState(
+                          { poemIndex: newIndex },
+                          selectedPoem.title,
+                          `/creative-writing?poem=${selectedPoem.slug}`
+                        );
+                      }
+                      setTimeout(() => setIsChanging(false), 300);
+                    }
+                  }}
+                  className="w-64 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {poems.map((poem, index) => (
+                    <option key={poem.slug} value={index}>
+                      {poem.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Content Container */}
+              <div className="flex flex-1">
+                {/* Left Page (Poem) */}
+                <div className="flex-1 p-4 sm:p-6 md:p-8 border-r border-gray-300 dark:border-gray-600 font-sans text-base sm:text-lg md:text-xl leading-relaxed relative text-black dark:text-gray-100">
+                  {/* Light Theme Background Pattern */}
+                  <div 
+                    className="absolute inset-0 opacity-10 pointer-events-none dark:opacity-0 transition-opacity duration-300 backdrop-blur-[1px]"
+                    style={{
+                      backgroundImage: 'url("/images/bg-light.webp")',
+                      backgroundRepeat: 'repeat',
+                      backgroundSize: '200px',
+                      transform: 'rotate(0deg)',
+                    }}
+                  />
+                  
+                  {/* Dark Theme Background Pattern */}
+                  <div 
+                    className="absolute inset-0 opacity-0 dark:opacity-15 pointer-events-none transition-opacity duration-300"
+                    style={{
+                      backgroundImage: 'url("/images/bg-dark.webp")',
+                      backgroundRepeat: 'repeat',
+                      backgroundSize: '200px',
+                      transform: 'rotate(0deg)',
+                    }}
+                  />
+                  
+                  <div className="max-w-prose mx-auto h-full flex flex-col relative">
+                    <div className="flex justify-between items-start mb-6">
+                      <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-gray-100">
+                        {currentPoem?.title}
+                      </h1>
+                      <button
+                        onClick={copyToClipboard}
+                        className={`p-2 rounded-full transition-colors ${
+                          showCopyFeedback
+                            ? "bg-green-200 dark:bg-green-800"
+                            : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                        }`}
+                        title="Copy poem to clipboard"
+                      >
+                        {showCopyFeedback ? (
+                          <>
+                            <Check className="w-5 h-5" />
+                            <span className="absolute -bottom-8 right-0 text-sm bg-gray-800 text-white px-2 py-1 rounded">
+                              Poem copied
+                            </span>
+                          </>
+                        ) : (
+                          <Clipboard className="w-5 h-5" />
+                        )}
+                      </button>
+                    </div>
+                    <div
+                      className={`whitespace-pre-wrap transition-opacity duration-300 text-black dark:text-gray-100 text-base sm:text-lg md:text-xl ${
                         isChanging ? "opacity-0" : "opacity-100"
                       }`}
                     >
-                      {currentPoem?.title}
-                    </h2>
-                    <button
-                      onClick={copyToClipboard}
-                      className={`p-2 rounded-full transition-colors ${
-                        showCopyFeedback
-                          ? "bg-green-200 dark:bg-green-800"
-                          : "hover:bg-gray-200 dark:hover:bg-gray-700"
-                      }`}
-                      title="Copy poem to clipboard"
-                    >
-                      {showCopyFeedback ? (
-                        <>
-                          <Check className="w-5 h-5" />
-                          <span className="absolute -bottom-8 right-0 text-sm bg-gray-800 text-white px-2 py-1 rounded">
-                            Poem copied
-                          </span>
-                        </>
-                      ) : (
-                        <Clipboard className="w-5 h-5" />
-                      )}
-                    </button>
-                  </div>
-                  <div
-                    className={`whitespace-pre-wrap transition-all duration-700 ease-in-out ${
-                      isChanging
-                        ? "opacity-0 translate-y-4"
-                        : "opacity-100 translate-y-0"
-                    }`}
-                  >
-                    {currentPoem?.content}
+                      {currentPoem?.content}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Right Page (Illustration/AI Gallery) */}
-              <div className="flex-1 relative">
-                {showAIGallery ? (
-                  <PoemAIGallery poem={currentPoem} isChanging={isChanging} />
-                ) : (
-                  <PoemIllustration poem={currentPoem} isChanging={isChanging} />
-                )}
+                {/* Right Page (Illustration/AI Gallery) */}
+                <div className="flex-1 relative">
+                  {showAIGallery ? (
+                    <PoemAIGallery poem={currentPoem} isChanging={isChanging} />
+                  ) : (
+                    <PoemIllustration poem={currentPoem} isChanging={isChanging} />
+                  )}
+                </div>
               </div>
             </div>
 

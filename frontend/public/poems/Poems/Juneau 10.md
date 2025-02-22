@@ -1,5 +1,6 @@
 ---
 published: true
+description: "To this day I don't know that she was a partner or if she was a lover, though I'd settle for calling her a rare kind of sunshine in the grays of the pacific northwest."
 ---
 I’ll miss you more than the sum of when we part.
 

@@ -1,14 +1,19 @@
+---
+published: true
+description: "A lot of writers are a bit masturbatory with the parallels inherent to creation, but not I of course."
+---
+
 A cascade of black ink 
 
 Could rain down 
 
 And write into existence 
 
-editors’ comments.
+Our editors’ comments.
 
-Gulches of Red 
+Gulches of Red Ink
 
-earth would divide through
+Would divide through red earth toward
 
 Ordained Mistakes.
 

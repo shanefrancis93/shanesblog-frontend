@@ -50,20 +50,39 @@ export const PoemAIGallery: React.FC<PoemAIGalleryProps> = ({
             <div className={`${color} px-3 py-1 text-sm font-medium text-center`}>
               {name}
             </div>
-            <div className="relative flex-1 min-h-[200px]">
-              <Image
-                src={`/images/poems/${poem.slug}-${llmType}.webp`}
-                alt={`${name}'s interpretation of ${poem.title}`}
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className={`
-                  object-contain transition-opacity duration-300
-                  ${isChanging ? "opacity-0" : "opacity-100"}
-                `}
-              />
-            </div>
-            <div className="p-2 text-xs text-gray-600 dark:text-gray-400 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              {analysis.analysis.image_prompt}
+            <div className="relative flex-grow p-4 bg-white dark:bg-gray-800">
+              {/* Image Container with Tiled Background */}
+              <div className="relative w-full pt-[100%] rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
+                {/* Tiled Background Pattern */}
+                <div 
+                  className="absolute inset-0 opacity-30 dark:opacity-25 mix-blend-multiply dark:mix-blend-screen"
+                  style={{
+                    backgroundImage: 'url("/images/bg-dark.webp")',
+                    backgroundRepeat: 'repeat',
+                    backgroundSize: '80px',  
+                    transform: 'rotate(0deg) scale(1.2)',  
+                  }}
+                />
+                
+                {/* Main Image with Drop Shadow */}
+                <div className="absolute inset-4 bg-white dark:bg-gray-800 rounded-lg p-2">
+                  <div className="relative w-full h-full rounded-lg overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(255,255,255,0.08)] transition-all duration-300 hover:shadow-[0_8px_40px_rgb(0,0,0,0.16)] dark:hover:shadow-[0_8px_40px_rgba(255,255,255,0.12)]">
+                    <Image
+                      src={`/images/poems/${poem.slug}-${llmType}.webp`}
+                      alt={`AI interpretation of ${poem.title} by ${name}`}
+                      fill
+                      className={`object-cover transition-all duration-500 ${
+                        isChanging ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                      }`}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-2">
+                <h3 className="font-medium">Analysis:</h3>
+                <p className="text-sm">{analysis.analysis.image_prompt}</p>
+              </div>
             </div>
           </div>
         );

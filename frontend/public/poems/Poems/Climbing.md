@@ -1,3 +1,8 @@
+---
+published: true
+description: "Climbing gyms are great ways to be around a lot of really fit people who are very horny for other climbers."
+---
+
 Man seeking partner
 
 Who knows their way with knots

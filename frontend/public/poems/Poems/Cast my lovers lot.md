@@ -1,3 +1,8 @@
+---
+published: true
+description: "The second version of the website will include a filter where you can choose to see only and all five poems not about girls."
+---
+
 I’ve loved and lost—
 
 —Near cast my lot
@@ -18,6 +23,7 @@ We wind up weary
 
 In the webs we weave?
 
+
 I’d wish and want to wait to wake,
 
 With withered worth
@@ -29,11 +35,3 @@ And weathered weight,
 The Water and Reed—
 
 I’d waste my wit and wade in weed. 
-
-  
-
-“Why?”
-
-Why wonder when to want to “win”
-
-With wonders wont to wax within?

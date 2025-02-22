@@ -1,5 +1,6 @@
 ---
 published: true
+description: "I think this one was about a girl I didn't really understand the vibe of and not for lack of trying. Her name is the last word of the poem and I think she's a doctor in Anchorage now."
 ---
 
 Between every one is a black dotted line

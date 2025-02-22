@@ -1,6 +1,6 @@
 ---
 published: true
-description: "I’ll file things in triplicate."
+description: "I @#$%@-ing hate the Department of Motor Vehicles."
 ---
 I’ll file things in triplicate
 
@@ -8,13 +8,14 @@ And sign the dotted lines. 
 
 And whenever we go into it
 
-I’ll nod the thousand times
+I’ll nod the thousand times.
+
 
 To speed the pace of paperwork and
 
 Public oversight,
 
-And begrudgingly I say it
+And begrudgingly I say it,
 
 But the Libertarians were right. 
 
@@ -22,38 +23,23 @@ But the Libertarians were right. 
 
 My life is on the operating table, 
 
-several agencies long ,
+Several agencies long,
 
-And my guts and dreams are splayed and labeled as life support beeps along.
+And my guts and dreams are splayed
+ 
+As life support beeps along.
 
-As anesthesia is a rich man’s drug,
 
-I cry myself to sleep
+Anesthesia is a rich man’s drug,
+
+So I cry myself to sleep
 
 And observe my surgeons briefly
 
-Before fading into the Deep. 
-
-
-Rural Development issues intent 
-
-To find Alaska on a map, 
-
-And the SSA marks their discontent
-
-Of being woken from their nap. 
-
-The IRS gives sweet caress
-
-To my financials as they patter,
-
-And HUD flips me over 
-
-In their usual bedside manner. 
-
+Before fading in the Deep. 
   
 
-The bureaucracy is noxious,
+The bureaucracy is noxious
 
 And with all the oversight I’m caught in,
 

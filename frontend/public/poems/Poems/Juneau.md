@@ -66,6 +66,7 @@ llm_analysis:
     image_url: /poems/openai/juneau_o.png
     timestamp: '2025-02-15T16:06:30.395207'
     version: '1.0'
+description: "Juneau is the capital of Alaska and carries itself in a unique, mystic way, something you'd not expect from anywhere in modernity, but is maybe preserved by isolation: no road leads in or out of Juneau."    
 published: true
 ---
 

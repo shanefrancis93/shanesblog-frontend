@@ -1,5 +1,6 @@
 ---
 published: true
+description: "I've lived in so many places with cold winters, and the ephemeral beauty of fall is why I'd still live in those climates again."
 ---
 
 Riches abound 

@@ -1,3 +1,8 @@
+---
+published: true
+description: "California is a magical place where one of the signs you're part of the in-crowd is an overt hostility to the poor people of Bakersfield that have done nothing to earn the ever present contempt of the rest of the population."
+---
+
 What if California split
 
 On its 11th Quinceanera?

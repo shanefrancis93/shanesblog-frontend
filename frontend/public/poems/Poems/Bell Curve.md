@@ -1,6 +1,11 @@
+---
+published: true
+description: "This was the second or third poem I wrote and it was the time in my life I realized I wasn't that much different from other economists or well-to-do 20 year-olds."
+---
+
 I didn’t climb for climbing’s sake;
 
-I reached this summit to well-serve. 
+I reached this summit to serve. 
 
 Though as I gaze over my domain, I realize—
 

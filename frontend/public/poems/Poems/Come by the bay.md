@@ -1,3 +1,8 @@
+---
+published: true
+description: "Reading these five years later has left me with an appreciation for the beauty I was seeing everywhere."
+---
+
 Come dance by the bay.
 
 The rhythm of leaves

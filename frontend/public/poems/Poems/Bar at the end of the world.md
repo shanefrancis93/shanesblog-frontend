@@ -1,3 +1,7 @@
+---
+published: true
+description: "So many of these I never published anywhere because they weren't finished but I can appreciate this one, at least, as it is."
+---
 Somewhere 
 
 At the edge of the world
@@ -10,9 +14,9 @@ Under an ancient jurisdiction.
 
 The barman
 
-Watches over his patrons
+Watches over his patrons,
 
-And their past
+And their past,
 
 And present and future
 
@@ -30,4 +34,4 @@ The selection is eclectic;
 
 Lightning in a bottle
 
-Takes up the top shelf
+Takes up the top shelf.

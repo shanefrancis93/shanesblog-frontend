@@ -1,27 +1,22 @@
-I asked God once 
+---
+published: true
+description: "I don't recall what I fully meant here. A lot of these poems were written in attempts to commune with my own developing id."
+---
+I asked God once 
 
-On our evening walk 
+On our evening walk 
 
-If he’d give away the finale 
+If he'd give away the finale 
 
 And save me the seasons
 
-That’ve deteriorated 
+That've deteriorated in quality.
 
-  
-
-The world ended yesterday
-
-As the sun set to swallow 
-
-The sounds    
-
-  
 
 The wind hisses behind us
 
 As we move jointly, single-file
 
-Toward allures of abject justice
+Toward allures of abject justice.
 
 Not much further, just a mile.
