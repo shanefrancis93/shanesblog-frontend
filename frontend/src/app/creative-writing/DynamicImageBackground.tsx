@@ -74,7 +74,7 @@ const getAverageColor = async (imageSrc: string): Promise<string> => {
           b = Math.min(255, Math.max(0, b + (b - ((r + g + b) / 3)) * saturationBoost));
         }
         
-        resolve(`rgba(${r}, ${g}, ${b}, 0.25)`);
+        resolve(`rgba(${r}, ${g}, ${b}, 0.1)`);
       } catch (error) {
         console.error('Error analyzing image:', error);
         resolve(generatePastelColor());
@@ -126,14 +126,36 @@ export const DynamicImageBackground: React.FC<DynamicImageBackgroundProps> = ({
         isLoading ? 'animate-pulse' : ''
       }`}
     >
-      {/* Background Color Layer */}
+      {/* Background Pattern Layer - Full Container */}
+      <div className="absolute inset-0 z-0">
+        {/* Light Theme Pattern */}
+        <div 
+          className="absolute inset-0 opacity-25 pointer-events-none dark:opacity-0 transition-opacity duration-300 backdrop-blur-[1px]"
+          style={{
+            backgroundImage: 'url("/images/bg-light.webp")',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '200px',
+            transform: 'rotate(0deg)',
+          }}
+        />
+        
+        {/* Dark Theme Pattern */}
+        <div 
+          className="absolute inset-0 opacity-0 dark:opacity-25 pointer-events-none transition-opacity duration-300"
+          style={{
+            backgroundImage: 'url("/images/bg-dark.webp")',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '200px',
+            transform: 'rotate(0deg)',
+          }}
+        />
+      </div>
+
+      {/* Dynamic Color Overlay */}
       <div 
         className="absolute inset-0 z-0"
         style={{ backgroundColor }}
       />
-      
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/5 to-transparent dark:from-white/5" />
       
       {/* Content Layer */}
       <div className="relative z-10 w-full h-full">

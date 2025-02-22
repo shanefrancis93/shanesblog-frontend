@@ -44,6 +44,8 @@ export async function GET() {
             notes: data.notes || "",
             date: data.date || new Date().toISOString().split("T")[0], // Default to current date if none provided
             llm_analysis: data.llm_analysis || null,
+            prompt: data.prompt || "",
+            model: data.model || "",
           };
         } catch (error: any) {
           // Just skip any files that can't be processed

@@ -12,7 +12,7 @@ const Layout = ({ children }: LayoutProps) => {
       <Header />
       
       {/* Divider Image */}
-      <div className="w-full flex justify-center pb-2 pt-6">
+      <div className="w-full flex justify-center pb-0 pt-6">
         <img 
           src="/images/light-divider.png" 
           alt="decorative divider"
@@ -25,7 +25,7 @@ const Layout = ({ children }: LayoutProps) => {
         />
       </div>
 
-      <main className="container mx-auto px-4 py-8 max-w-6xl">
+      <main className="container mx-auto px-4 py-4 max-w-6xl">
         {children}
       </main>
       

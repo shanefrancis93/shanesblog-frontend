@@ -23,13 +23,17 @@ export type LLMAnalysis = {
 
 export interface Poem {
   title: string;
-  content: string;
   slug: string;
+  content: string;
   illustration?: string;
   description?: string;  // Optional description from frontmatter
   notes?: string;
   date?: string;
-  llm_analysis?: LLMAnalysis;
+  llm_analysis?: {
+    [key: string]: any;
+  };
+  prompt?: string;
+  model?: string;
 }
 
 // This will be populated by the API call

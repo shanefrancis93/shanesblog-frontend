@@ -8,6 +8,8 @@ import { PoemIllustration } from "./PoemIllustration";
 import { PoemAIGallery } from "./PoemAIGallery";
 import { PoemNavigation } from "./PoemNavigation";
 import PoemAnalysisOverlay from "./PoemAnalysisOverlay";
+import Collapsible from "../../components/Collapsible";
+import Image from 'next/image';
 
 const CreativeWritingPage = () => {
   const [poems, setPoems] = useState<Poem[]>([]);
@@ -91,166 +93,146 @@ const CreativeWritingPage = () => {
 
         <div className="flex flex-col md:flex-row gap-8 relative">
           {/* Left column with poem content */}
-          <div className="flex-1">
-            <div className="flex flex-col gap-4">
-              <PoemNavigation
-                poems={poems}
-                currentIndex={currentPoemIndex}
-                onNavigate={handlePoemChange}
-                isChanging={isChanging}
-              />
-              <div className="flex justify-end gap-2">
-                {currentPoem?.llm_analysis && Object.keys(currentPoem.llm_analysis).length > 0 && (
-                  <>
-                    <button
-                      onClick={() => setShowAIGallery(!showAIGallery)}
-                      className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2 ${
-                        showAIGallery 
-                        ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
-                        : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                      }`}
-                    >
-                      {showAIGallery ? (
-                        <>
-                          <ImageIcon className="w-4 h-4" />
-                          <span>Show Illustration</span>
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-4 h-4" />
-                          <span>Show AI Gallery</span>
-                        </>
-                      )}
-                    </button>
-                    <button
-                      onClick={() => setShowAIAnalysis(!showAIAnalysis)}
-                      className={`px-4 py-2 rounded-md transition-colors ${
-                        showAIAnalysis 
-                        ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
-                        : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                      }`}
-                    >
-                      AI Analysis
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Book Container */}
-            <div className="mt-4 flex flex-col bg-cream dark:bg-[#112240] rounded-lg shadow-2xl min-h-[800px] border border-gray-200 dark:border-transparent relative overflow-hidden">
-              {/* Poem Selection Dropdown */}
-              <div className="px-4 py-2 border-b border-gray-300 dark:border-gray-600">
-                <select
-                  value={currentPoemIndex}
-                  onChange={(e) => {
-                    const newIndex = Number(e.target.value);
-                    if (!isNaN(newIndex) && newIndex >= 0 && newIndex < poems.length) {
-                      setIsChanging(true);
-                      setCurrentPoemIndex(newIndex);
-                      // Update URL to reflect the selected poem
-                      const selectedPoem = poems[newIndex];
-                      if (selectedPoem) {
-                        window.history.pushState(
-                          { poemIndex: newIndex },
-                          selectedPoem.title,
-                          `/creative-writing?poem=${selectedPoem.slug}`
-                        );
-                      }
-                      setTimeout(() => setIsChanging(false), 300);
-                    }
-                  }}
-                  className="w-64 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {poems.map((poem, index) => (
-                    <option key={poem.slug} value={index}>
-                      {poem.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              {/* Content Container */}
-              <div className="flex flex-1">
-                {/* Left Page (Poem) */}
-                <div className="flex-1 p-4 sm:p-6 md:p-8 border-r border-gray-300 dark:border-gray-600 font-sans text-base sm:text-lg md:text-xl leading-relaxed relative text-black dark:text-gray-100">
-                  {/* Light Theme Background Pattern */}
-                  <div 
-                    className="absolute inset-0 opacity-10 pointer-events-none dark:opacity-0 transition-opacity duration-300 backdrop-blur-[1px]"
-                    style={{
-                      backgroundImage: 'url("/images/bg-light.webp")',
-                      backgroundRepeat: 'repeat',
-                      backgroundSize: '200px',
-                      transform: 'rotate(0deg)',
-                    }}
-                  />
-                  
-                  {/* Dark Theme Background Pattern */}
-                  <div 
-                    className="absolute inset-0 opacity-0 dark:opacity-15 pointer-events-none transition-opacity duration-300"
-                    style={{
-                      backgroundImage: 'url("/images/bg-dark.webp")',
-                      backgroundRepeat: 'repeat',
-                      backgroundSize: '200px',
-                      transform: 'rotate(0deg)',
-                    }}
-                  />
-                  
-                  <div className="max-w-prose mx-auto h-full flex flex-col relative">
-                    <div className="flex justify-between items-start mb-6">
-                      <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-gray-100">
-                        {currentPoem?.title}
-                      </h1>
+          <Collapsible title="Poem Gallery" defaultOpen={true}>
+            <div className="flex-1">
+              <div className="flex flex-col gap-4">
+                <PoemNavigation
+                  poems={poems}
+                  currentIndex={currentPoemIndex}
+                  onNavigate={handlePoemChange}
+                  isChanging={isChanging}
+                />
+                <div className="flex justify-end gap-2">
+                  {currentPoem?.llm_analysis && Object.keys(currentPoem.llm_analysis).length > 0 && (
+                    <>
                       <button
-                        onClick={copyToClipboard}
-                        className={`p-2 rounded-full transition-colors ${
-                          showCopyFeedback
-                            ? "bg-green-200 dark:bg-green-800"
-                            : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                        onClick={() => setShowAIGallery(!showAIGallery)}
+                        className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2 ${
+                          showAIGallery 
+                          ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
+                          : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
                         }`}
-                        title="Copy poem to clipboard"
                       >
-                        {showCopyFeedback ? (
+                        {showAIGallery ? (
                           <>
-                            <Check className="w-5 h-5" />
-                            <span className="absolute -bottom-8 right-0 text-sm bg-gray-800 text-white px-2 py-1 rounded">
-                              Poem copied
-                            </span>
+                            <ImageIcon className="w-4 h-4" />
+                            <span>Show Illustration</span>
                           </>
                         ) : (
-                          <Clipboard className="w-5 h-5" />
+                          <>
+                            <Sparkles className="w-4 h-4" />
+                            <span>Show AI Gallery</span>
+                          </>
                         )}
                       </button>
-                    </div>
-                    <div
-                      className={`whitespace-pre-wrap transition-opacity duration-300 text-black dark:text-gray-100 text-base sm:text-lg md:text-xl ${
-                        isChanging ? "opacity-0" : "opacity-100"
-                      }`}
-                    >
-                      {currentPoem?.content}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right Page (Illustration/AI Gallery) */}
-                <div className="flex-1 relative">
-                  {showAIGallery ? (
-                    <PoemAIGallery poem={currentPoem} isChanging={isChanging} />
-                  ) : (
-                    <PoemIllustration poem={currentPoem} isChanging={isChanging} />
+                      <button
+                        onClick={() => setShowAIAnalysis(!showAIAnalysis)}
+                        className={`px-4 py-2 rounded-md transition-colors ${
+                          showAIAnalysis 
+                          ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
+                          : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
+                        }`}
+                      >
+                        AI Analysis
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
-            </div>
 
-            {/* AI Analysis Section */}
-            {showAIAnalysis && currentPoem && (
-              <PoemAnalysisOverlay 
-                poem={currentPoem} 
-                onClose={() => setShowAIAnalysis(false)} 
-              />
-            )}
-          </div>
+              {/* Book Container */}
+              <div className="mt-4 flex flex-col bg-cream dark:bg-[#112240] rounded-lg shadow-2xl min-h-[800px] border border-gray-200 dark:border-transparent relative overflow-hidden">
+                {/* Poem Selection Dropdown */}
+                <div className="px-4 py-2 border-b border-gray-300 dark:border-gray-600">
+                  <select
+                    value={currentPoemIndex}
+                    onChange={(e) => {
+                      const newIndex = Number(e.target.value);
+                      if (!isNaN(newIndex) && newIndex >= 0 && newIndex < poems.length) {
+                        setIsChanging(true);
+                        setCurrentPoemIndex(newIndex);
+                        // Update URL to reflect the selected poem
+                        const selectedPoem = poems[newIndex];
+                        if (selectedPoem) {
+                          window.history.pushState(
+                            { poemIndex: newIndex },
+                            selectedPoem.title,
+                            `/creative-writing?poem=${selectedPoem.slug}`
+                          );
+                        }
+                        setTimeout(() => setIsChanging(false), 300);
+                      }
+                    }}
+                    className="w-64 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {poems.map((poem, index) => (
+                      <option key={poem.slug} value={index}>
+                        {poem.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Content Container */}
+                <div className="flex flex-1">
+                  {/* Left Page (Poem) */}
+                  <div className="flex-1 p-4 sm:p-6 md:p-8 border-r border-gray-300 dark:border-gray-600 font-sans text-base sm:text-lg md:text-xl leading-relaxed relative text-black dark:text-gray-100">
+                    <div className="max-w-prose mx-auto h-full flex flex-col relative">
+                      <div className="flex justify-between items-start mb-6">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-gray-100">
+                          {currentPoem?.title}
+                        </h1>
+                        <button
+                          onClick={copyToClipboard}
+                          className={`p-2 rounded-full transition-colors ${
+                            showCopyFeedback
+                              ? "bg-green-200 dark:bg-green-800"
+                              : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                          }`}
+                          title="Copy poem to clipboard"
+                        >
+                          {showCopyFeedback ? (
+                            <>
+                              <Check className="w-5 h-5" />
+                              <span className="absolute -bottom-8 right-0 text-sm bg-gray-800 text-white px-2 py-1 rounded">
+                                Poem copied
+                              </span>
+                            </>
+                          ) : (
+                            <Clipboard className="w-5 h-5" />
+                          )}
+                        </button>
+                      </div>
+                      <div
+                        className={`whitespace-pre-wrap transition-opacity duration-300 text-black dark:text-gray-100 text-base sm:text-lg md:text-xl ${
+                          isChanging ? "opacity-0" : "opacity-100"
+                        }`}
+                      >
+                        {currentPoem?.content}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Page (Image) */}
+                  <div className="flex-1 relative">
+                    {showAIGallery ? (
+                      <PoemAIGallery poem={currentPoem} isChanging={isChanging} />
+                    ) : (
+                      <PoemIllustration poem={currentPoem} isChanging={isChanging} />
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* AI Analysis Section */}
+              {showAIAnalysis && currentPoem && (
+                <PoemAnalysisOverlay 
+                  poem={currentPoem} 
+                  onClose={() => setShowAIAnalysis(false)} 
+                />
+              )}
+            </div>
+          </Collapsible>
         </div>
       </div>
     </Layout>
