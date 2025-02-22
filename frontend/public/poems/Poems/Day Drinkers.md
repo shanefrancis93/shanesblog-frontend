@@ -1,6 +1,11 @@
+---
+published: true
+description: "Blessed be the day-drinkers for we make our blood as Christ’s slumped as Rodin’s Thinker as inspired by our vice."
+---
+
 Blessed be the day-drinkers
 
-For we make our blood as Christ’s
+For we make our blood as Christ’s,
 
 Slumped as Rodin’s Thinker
 
@@ -12,6 +17,6 @@ Grant me wings to pair my flight
 
 Of sampler glasses of something light.
 
-Sing of Psalms and bring me closer and
+Sing of Psalms and bring me closer
 
-Fill my cup til it runneth over.
+And fill my cup til it runneth over.

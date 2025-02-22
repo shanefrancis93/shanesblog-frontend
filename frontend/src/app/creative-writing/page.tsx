@@ -80,12 +80,14 @@ const CreativeWritingPage = () => {
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-4xl font-heading mb-8">Creative Writing</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
-          Welcome to my creative writing space. Here you'll find a collection of my poems,
-          each paired with an AI-generated illustration. Toggle between the main illustration
-          and AI interpretations to see different perspectives on each poem.
-        </p>
+        <div className="text-gray-600 dark:text-gray-400 mb-8">
+          <p>
+            The best thing you can do for yourself as a writer (and don't get it twisted, that's a burden none of us can escape in the age of texting, emailing and prompting) is to learn to differentiate yourself from the machines.
+          </p>
+          <p>
+            This is a space for my own catharis, my personal expression and a reminder to keep writing and keep creating.
+          </p>
+        </div>
 
         <div className="flex flex-col md:flex-row gap-8 relative">
           {/* Left column with poem content */}
@@ -98,36 +100,40 @@ const CreativeWritingPage = () => {
                 isChanging={isChanging}
               />
               <div className="flex justify-end gap-2">
-                <button
-                  onClick={() => setShowAIGallery(!showAIGallery)}
-                  className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2 ${
-                    showAIGallery 
-                    ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
-                    : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                  }`}
-                >
-                  {showAIGallery ? (
-                    <>
-                      <ImageIcon className="w-4 h-4" />
-                      <span>Show Illustration</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      <span>Show AI Gallery</span>
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => setShowAIAnalysis(!showAIAnalysis)}
-                  className={`px-4 py-2 rounded-md transition-colors ${
-                    showAIAnalysis 
-                    ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
-                    : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                  }`}
-                >
-                  AI Analysis
-                </button>
+                {currentPoem?.llm_analysis && Object.keys(currentPoem.llm_analysis).length > 0 && (
+                  <>
+                    <button
+                      onClick={() => setShowAIGallery(!showAIGallery)}
+                      className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2 ${
+                        showAIGallery 
+                        ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
+                        : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
+                      }`}
+                    >
+                      {showAIGallery ? (
+                        <>
+                          <ImageIcon className="w-4 h-4" />
+                          <span>Show Illustration</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4" />
+                          <span>Show AI Gallery</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setShowAIAnalysis(!showAIAnalysis)}
+                      className={`px-4 py-2 rounded-md transition-colors ${
+                        showAIAnalysis 
+                        ? 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100' 
+                        : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
+                      }`}
+                    >
+                      AI Analysis
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 

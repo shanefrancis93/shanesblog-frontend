@@ -1,3 +1,8 @@
+---
+published: true
+description: "I liked writing comedy poetry and I imagine I'll get deeper into that effort again."
+---
+
 I was at the dietitian,
 
 (Overdue, by my admission)
@@ -15,20 +20,6 @@ I (almost) said,
 But I scanned for alternatives
 
 Deep in my head.
-
-  
-
-The truth is as kind
-
-As justice is blind
-
-And
-
-  
-
-There was a truth 
-
-To the matter
 
   
 

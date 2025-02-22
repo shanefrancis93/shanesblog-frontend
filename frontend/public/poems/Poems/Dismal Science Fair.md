@@ -1,3 +1,8 @@
+---
+published: true
+description: "I love economics and how it helps me understand a world I'm not around to observe."
+---
+
 They call economics “the dismal science”
 
 And though I’ve never cared, 
