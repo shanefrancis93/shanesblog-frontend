@@ -3,15 +3,18 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
-// Consider using a more readable serif font for content
 const inter = Inter({ 
   subsets: ['latin'],
-  variable: '--font-inter'
+  variable: '--font-inter',
+  display: 'swap',
+  fallback: ['system-ui', 'arial']
 })
 
 const playfair = Playfair_Display({ 
   subsets: ['latin'],
-  variable: '--font-playfair'
+  variable: '--font-playfair',
+  display: 'swap',
+  fallback: ['Georgia', 'serif']
 })
 
 export const metadata: Metadata = {
