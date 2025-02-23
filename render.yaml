@@ -1,13 +1,15 @@
 services:
   - type: web
-    name: shanesblog
+    name: shanesblog-frontend
     env: node
     rootDirectory: frontend
-    buildCommand: npm install && npm run build
-    startCommand: npm run start
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run start
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 3000
+      - key: NEXT_PUBLIC_API_URL
+        value: https://shanesblog-frontend.onrender.com
     autoDeploy: true
