@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { AIMetadata, AIModel } from '../../app/api/blog/route';
+import type { AIMetadata } from '../../app/api/blog/route';
 
 interface AIBadgeProps {
   metadata: AIMetadata;
@@ -46,30 +46,29 @@ export function AIBadge({ metadata, className = '' }: AIBadgeProps) {
           <div className="space-y-4">
             <div>
               <h4 className="font-medium text-gray-900 dark:text-gray-100">
-                Generated with {metadata.model}
+                Generated with {metadata.models.join(', ')}
               </h4>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {new Date(metadata.generatedAt).toLocaleString()}
+                {metadata.generatedAt ? new Date(metadata.generatedAt).toLocaleString() : 'Date not available'}
               </p>
             </div>
 
-            {metadata.models && metadata.models.length > 0 && (
+            {metadata.contributions && metadata.contributions.length > 0 && (
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                 <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                   Model Contributions
                 </h5>
                 <div className="space-y-2">
-                  {metadata.models.map((model: AIModel, index: number) => (
+                  {metadata.contributions.map((contribution, index) => (
                     <div 
                       key={index}
                       className="text-sm"
                     >
                       <div className="font-medium text-gray-700 dark:text-gray-300">
-                        {model.section}
+                        {contribution.section || 'General Contribution'}
                       </div>
                       <div className="text-gray-500 dark:text-gray-400 text-xs">
-                        {model.name}
-                        {model.role && ` • ${model.role}`}
+                        {contribution.model} - {contribution.role}
                       </div>
                     </div>
                   ))}

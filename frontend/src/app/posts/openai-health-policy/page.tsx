@@ -18,11 +18,18 @@ const content = `
 export default function OpenAIHealthPost() {
   return (
     <BlogPost
-      title="Reviewing OpenAI's Deep Research on Health Policy Research"
-      date="2024-02-15"
-      content={content}
-      readingTime="8"
-      tags={['AI', 'Healthcare', 'Policy', 'Research']}
+      post={{
+        id: "openai-health-policy",
+        title: "Reviewing OpenAI's Deep Research on Health Policy Research",
+        date: "2024-02-15",
+        content: content,
+        readingTime: "8",
+        tags: ["AI", "Health Policy", "Research"],
+        sections: [],
+        excerpt: "A deep dive into OpenAI's research on health policy and its implications for the healthcare industry.",
+        slug: "openai-health-policy",
+        published: true
+      }}
     />
   );
 } 
