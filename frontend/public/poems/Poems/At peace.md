@@ -1,7 +1,10 @@
 ---
 published: true
 description: "Feeling cerebral and a sense of rebirth."
+prompt: "scribbled drawing of the water on low tide"
+model: "DALLE-3"
 ---
+
 At last at peace
 
 And now at ease

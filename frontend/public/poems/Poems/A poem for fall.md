@@ -1,6 +1,9 @@
 ---
 published: true
 description: "I've lived in so many places with cold winters, and the ephemeral beauty of fall is why I'd still live in those climates again."
+prompt: "Squibbled line drawings of drifting leaves"
+model: "DALLE-3"
+
 ---
 
 Riches abound 

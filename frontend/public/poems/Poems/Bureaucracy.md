@@ -1,6 +1,8 @@
 ---
 published: true
 description: "I @#$%@-ing hate the Department of Motor Vehicles."
+prompt: "scribbled line drawing of a mummy made of WARNING tape"
+model: "DALLE-3"
 ---
 I’ll file things in triplicate
 

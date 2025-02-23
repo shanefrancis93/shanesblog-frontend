@@ -1,6 +1,8 @@
 ---
 published: true
 description: "A lot of writers are a bit masturbatory with the parallels inherent to creation, but not I of course."
+prompt: "scribbled line drawing of black ink leaving tipped inkwell in oozing waves"
+model: "DALLE-3"
 ---
 
 A cascade of black ink 

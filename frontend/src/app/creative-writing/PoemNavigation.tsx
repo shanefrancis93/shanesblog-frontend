@@ -9,6 +9,7 @@ interface PoemNavigationProps {
   currentIndex: number;
   onNavigate: (index: number) => void;
   isChanging: boolean;
+  id?: string;
 }
 
 export const PoemNavigation: React.FC<PoemNavigationProps> = ({
@@ -16,11 +17,12 @@ export const PoemNavigation: React.FC<PoemNavigationProps> = ({
   currentIndex,
   onNavigate,
   isChanging,
+  id
 }) => {
   const currentPoem = poems[currentIndex];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md">
+    <div id={id} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md">
       <div className="flex items-center justify-between">
         <button
           onClick={() => onNavigate(currentIndex - 1)}

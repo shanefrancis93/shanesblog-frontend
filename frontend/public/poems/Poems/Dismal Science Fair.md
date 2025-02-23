@@ -1,6 +1,8 @@
 ---
 published: true
 description: "I love economics and how it helps me understand a world I'm not around to observe."
+prompt: "scribbled drawing of a dismal dark carnival"
+model: "DALLE-3"
 ---
 
 They call economics “the dismal science”

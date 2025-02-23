@@ -35,14 +35,17 @@ export async function GET() {
 
           const slug = path.parse(filename).name;
 
+          // Log the frontmatter data for debugging
+          console.log(`Poem ${slug} frontmatter:`, data);
+
           return {
             title: data.title || slug.replace(/-/g, " "),
             content: content.trim(),
             slug: slug,
             description: data.description || "",
-            illustration: data.illustration || `/images/poems/${slug}.webp`,
+            illustration: `/images/poems/${slug}.webp`,
             notes: data.notes || "",
-            date: data.date || new Date().toISOString().split("T")[0], // Default to current date if none provided
+            date: data.date || new Date().toISOString().split("T")[0],
             llm_analysis: data.llm_analysis || null,
             prompt: data.prompt || "",
             model: data.model || "",

@@ -1,6 +1,8 @@
 ---
 published: true
 description: "This is an ode to stupid questions I've asked all my life that, in hindsight, I'm glad I lacked the social grace to preempt."
+prompt: "Scribbled line drawing of an apple tree with a snake in the branches"
+model: "DALLE-3"
 ---
 
 What I recall from Sunday School 

@@ -1,8 +1,8 @@
 ---
 published: true
 description: "I used to post these on Instagram in screenshots of little squares. It was why all my poems were so short length and by line. This one poured out of me, even as a departure from form."
-prompt: "I had a dream I kayaked down a stream next to my home."
-model: "stability-ai-2.1"
+prompt: "scribbled line drawing of empty kayak in a stream top-down under tree branch and leaves in water"
+model: "DALLE-3"
 ---
 I had a dream I kayaked down a stream next to my home. 
 

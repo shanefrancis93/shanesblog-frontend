@@ -68,6 +68,8 @@ llm_analysis:
     version: '1.0'
 description: "Juneau is the capital of Alaska and carries itself in a unique, mystic way, something you'd not expect from anywhere in modernity, but is maybe preserved by isolation: no road leads in or out of Juneau."    
 published: true
+prompt: "scribbled line drawing of empty kayak in a stream top-down under tree branch and leaves in water"
+model: "DALLE-3"
 ---
 
 When I think of Juneau

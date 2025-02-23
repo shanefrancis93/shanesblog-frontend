@@ -1,6 +1,8 @@
 ---
 published: true
 description: "This was either the second or third poem I wrote, and it was when I was trying to figure out why I felt so strongly about what others thought of me. I found the answer years later: I think strongly about what others do."
+prompt: "Scribbled line drawing of an ornate soul mirror"
+model: "DALLE-3"
 ---
 
 I fear the thought of failing you,

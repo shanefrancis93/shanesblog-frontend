@@ -30,7 +30,7 @@ export function ThemeToggle() {
     <div className="fixed top-4 right-4 flex items-center gap-2 z-50">
       {/* Mode label with fade effect */}
       <div 
-        className={`px-3 py-2 rounded-full 
+        className={`hidden md:block px-3 py-2 rounded-full 
           bg-white dark:bg-gray-800 
           text-gray-800 dark:text-gray-200
           text-sm font-medium
@@ -48,7 +48,10 @@ export function ThemeToggle() {
           const newTheme = theme === 'light' ? 'dark' : 'light';
           setTheme(newTheme);
           document.documentElement.classList.toggle('dark');
-          setShowLabel(true); // Show label after toggle
+          // Only show label on desktop
+          if (window.innerWidth >= 768) {
+            setShowLabel(true);
+          }
         }}
         onMouseEnter={() => setShowLabel(true)}
         className="p-2 rounded-full 

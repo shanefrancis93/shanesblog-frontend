@@ -103,10 +103,13 @@ export default function TechProjects() {
         <div className="grid gap-8">
           {projects.map((project, index) => (
             <Card
-              key={project.slug}
-              className={`transition-all duration-300 hover:shadow-lg ${
-                hoveredIndex === index ? 'scale-[1.01]' : ''
-              }`}
+              className={`relative overflow-hidden
+                backdrop-blur-sm
+                bg-white/80 dark:bg-[#112240]/80
+                hover:bg-white/90 dark:hover:bg-[#1a365d]/90
+                transition-all duration-300
+                ${hoveredIndex === index ? 'shadow-2xl' : 'shadow-lg'}
+              `}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >

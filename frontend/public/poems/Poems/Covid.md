@@ -1,6 +1,8 @@
 ---
 published: true
 description: "I'm disappointed  so many feel compelled to misremember the deaths of a million people for shallow political grift."
+prompt: "scribbled drawing of a coronavirus"
+model: "DALLE-3"
 ---
 
 Every few days, there’s another 9/11,

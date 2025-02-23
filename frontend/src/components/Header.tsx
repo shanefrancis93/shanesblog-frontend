@@ -2,11 +2,10 @@ import Link from 'next/link';
 import { ThemeToggle } from './ThemeToggle';
 
 const navigationItems = [
-  { name: 'Home', path: '/' },
-  { name: 'Blog', path: '/blog' },
-  { name: 'Tech Projects', path: '/tech-projects' },
-  { name: 'Creative Writing', path: '/creative-writing' },
-  { name: 'About', path: '/about' }
+  { name: 'Blog', mobileName: 'Blog', path: '/blog' },
+  { name: 'Tech Projects', mobileName: 'Tech', path: '/tech-projects' },
+  { name: 'Creative Projects', mobileName: 'Creative', path: '/creative-writing' },
+  { name: 'About', mobileName: 'About', path: '/about' }
 ];
 
 const Header = () => {
@@ -17,28 +16,36 @@ const Header = () => {
         {/* Title */}
         <Link 
           href="/" 
-          className="text-4xl font-serif text-theme-light-primary dark:text-theme-dark-primary 
+          className="text-2xl md:text-4xl font-serif text-theme-light-primary dark:text-theme-dark-primary 
             hover:text-theme-light-text dark:hover:text-theme-dark-text transition-colors
-            py-6"
+            py-3 md:py-6 text-center"
         >
-          The Writing Desk of Shane Farrow
+          <span className="md:hidden">
+            The Writing Desk of<br />
+            Shane Farrow
+          </span>
+          <span className="hidden md:inline">
+            The Writing Desk of Shane Farrow
+          </span>
         </Link>
         
         {/* Navigation */}
-        <nav className="py-4 w-full">
-          <div className="flex items-center justify-center flex-wrap gap-6">
+        <nav className="py-2 md:py-4 w-full overflow-x-auto">
+          <div className="flex items-center justify-center flex-nowrap gap-3 md:gap-6">
             {navigationItems.map((item, index, array) => (
-              <span key={item.name} className="flex items-center">
+              <span key={item.name} className="flex items-center whitespace-nowrap">
                 <Link 
                   href={item.path}
-                  className="font-serif text-xl text-theme-light-text dark:text-theme-dark-text 
+                  className="font-serif text-base md:text-3xl text-theme-light-text dark:text-theme-dark-text 
                     hover:text-theme-light-primary dark:hover:text-theme-dark-primary 
                     transition-colors"
                 >
-                  {item.name}
+                  <span className="md:hidden">{item.mobileName}</span>
+                  <span className="hidden md:inline">{item.name}</span>
                 </Link>
+
                 {index < array.length - 1 && (
-                  <span className="ml-6 text-xl text-theme-light-secondary dark:text-theme-dark-secondary">
+                  <span className="ml-3 md:ml-8 text-xs md:text-2xl text-theme-light-secondary dark:text-theme-dark-secondary">
                     ◆
                   </span>
                 )}

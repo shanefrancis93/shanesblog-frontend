@@ -1,6 +1,8 @@
 ---
 published: true
 description: "California is a magical place where one of the signs you're part of the in-crowd is an overt hostility to the poor people of Bakersfield that have done nothing to earn the ever present contempt of the rest of the population."
+prompt: "a scribbled line drawing of california floating out to see on a map"
+model: "DALLE-3"
 ---
 
 What if California split

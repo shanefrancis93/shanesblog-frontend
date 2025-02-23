@@ -1,6 +1,8 @@
 ---
 published: true
 description: "Blessed be the day-drinkers for we make our blood as Christ’s slumped as Rodin’s Thinker as inspired by our vice."
+prompt: "scribbled drawing of a sunset in a glass"
+model: "DALLE-3"
 ---
 
 Blessed be the day-drinkers

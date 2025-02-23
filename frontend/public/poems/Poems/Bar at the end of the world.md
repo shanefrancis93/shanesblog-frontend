@@ -1,7 +1,10 @@
 ---
 published: true
 description: "So many of these I never published anywhere because they weren't finished but I can appreciate this one, at least, as it is."
+prompt: "a scribbled line drawing of bottled maelstrom next to bottled sunshine on a bar's shelf"
+model: "DALLE-3"
 ---
+
 Somewhere 
 
 At the edge of the world

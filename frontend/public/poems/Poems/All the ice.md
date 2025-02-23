@@ -1,7 +1,10 @@
 ---
 published: true
 description: "Most of my poems were written in Juneau, Alaska, where I felt  I was absorbing ambient advice when I walked through nature."
+prompt: "Scribbled drawing of a landscape with multiple mountain peaks"
+model: "DALLE-3"
 ---
+
 I’d not think twice
 
 With all the ice 

@@ -1,6 +1,8 @@
 ---
 published: true
 description: "Climbing gyms are great ways to be around a lot of really fit people who are very horny for other climbers."
+prompt: "scribbled ink drawing of a climbing harness and a set of handcuffs next to it"
+model: "DALLE-3"
 ---
 
 Man seeking partner

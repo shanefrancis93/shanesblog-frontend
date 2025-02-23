@@ -1,6 +1,8 @@
 ---
 published: true
 description: "It was a gorgeous L-shaped wooden desk and a California king bedframe and mattress that I bought after leaving Juneau for my PhD program in Southern California. For additional context, my studio apartment was 400 square feet."
+prompt: "scribbled line drawing of a small studio with only a large bedrame in it and a small kitchen"
+model: "DALLE-3"
 ---
 
 Sometimes when my confidence

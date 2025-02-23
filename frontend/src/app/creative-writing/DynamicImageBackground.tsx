@@ -122,9 +122,10 @@ export const DynamicImageBackground: React.FC<DynamicImageBackgroundProps> = ({
 
   return (
     <div 
-      className={`relative w-full h-full transition-all duration-700 ease-in-out ${
-        isLoading ? 'animate-pulse' : ''
-      }`}
+      className="relative w-full min-h-[500px] md:min-h-[600px] transition-all duration-700 ease-in-out"
+      style={{ 
+        backgroundColor,
+      }}
     >
       {/* Background Pattern Layer - Full Container */}
       <div className="absolute inset-0 z-0">
@@ -154,7 +155,6 @@ export const DynamicImageBackground: React.FC<DynamicImageBackgroundProps> = ({
       {/* Dynamic Color Overlay */}
       <div 
         className="absolute inset-0 z-0"
-        style={{ backgroundColor }}
       />
       
       {/* Content Layer */}

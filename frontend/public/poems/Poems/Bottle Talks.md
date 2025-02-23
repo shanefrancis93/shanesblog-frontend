@@ -1,6 +1,8 @@
 ---
 published: true
 description: "I don't really drink beyond a beer with friends, once in a blue moon. But I understand the appeal and knew many who it appealed to."
+prompt: "scribbled line drawing of a bottle whose mouth has jagged teeth"
+model: "DALLE-3"
 ---
 
 You asked if it was the bottle talking—

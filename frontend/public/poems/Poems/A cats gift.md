@@ -1,6 +1,8 @@
 ---
 published: true
 description: "This was for Wednesday, whose lust for the hunt was never sated."
+prompt: "scribbled line drawing of a black cat posing with successful hunt of a mouse"
+model: "DALLE-3"
 ---
 My cat brought in a dead bird
 

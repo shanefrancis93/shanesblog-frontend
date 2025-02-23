@@ -126,9 +126,11 @@ export default function BlogPage() {
         {/* Posts Grid */}
         {posts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-xl text-theme-light-secondary dark:text-theme-dark-secondary">
-              No blog posts found.
-            </p>
+            <div className="backdrop-blur-sm bg-white/80 dark:bg-[#112240]/80 rounded-lg p-6 sm:p-8 hover:shadow-md transition-shadow duration-200">
+              <h1 className="text-3xl sm:text-4xl font-serif font-semibold text-center text-gray-800 dark:text-gray-200">
+                N/A - Still being organized.
+              </h1>
+            </div>
           </div>
         ) : (
           <div className="space-y-8">
@@ -140,28 +142,16 @@ export default function BlogPage() {
               >
                 <Card 
                   className={`
-                    group relative overflow-hidden border-0
-                    backdrop-blur-sm h-[300px]
-                    bg-white/80 dark:bg-[#112240]
-                    hover:bg-white dark:hover:bg-[#1a365d]
+                    group relative overflow-hidden
+                    backdrop-blur-sm
+                    bg-white/80 dark:bg-[#112240]/80
+                    hover:bg-white/90 dark:hover:bg-[#1a365d]/90
                     transition-all duration-300
                     ${hoveredPost === post.id ? 'shadow-2xl' : 'shadow-lg'}
                   `}
                   onMouseEnter={() => setHoveredPost(post.id)}
                   onMouseLeave={() => setHoveredPost(null)}
                 >
-                  {/* Decorative elements */}
-                  <div className="absolute -right-32 -top-32 w-96 h-96 
-                    bg-[#3d2952]/10 dark:bg-purple-400/10 rounded-full blur-3xl 
-                    group-hover:bg-[#3d2952]/20 dark:group-hover:bg-purple-500/20 
-                    transition-all duration-700" 
-                  />
-                  <div className="absolute -left-32 -bottom-32 w-96 h-96 
-                    bg-[#2c4027]/10 dark:bg-green-400/10 rounded-full blur-3xl 
-                    group-hover:bg-[#2c4027]/20 dark:group-hover:bg-green-500/20 
-                    transition-all duration-700" 
-                  />
-                  
                   <CardContent className="relative p-6 md:p-8 h-full flex flex-col">
                     <div className="flex-1">
                       <div className="flex items-center justify-between text-sm mb-2">

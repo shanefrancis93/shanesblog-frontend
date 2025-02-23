@@ -1,8 +1,8 @@
 ---
-title: "Semantic Compression Study: AI Language Models"
+title: "Compressing Semantic Meaning across Prompt-Generated Artwork"
 date: "2025-02-20"
 author: "Shane"
-description: "An interactive exploration of how frontier AI models maintain semantic fidelity while reducing textual complexity."
+description: "Frontier AI models maintain semantic fidelity while reducing textual complexity."
 tags: ["AI", "Research", "Language Models", "Interactive"]
 preview_image: "/blog/semantic-compression/preview.jpg"
 status: "published"

@@ -1,6 +1,8 @@
 ---
 published: true
 description: "This was a poem for a girl I liked, and is one of the few with an alternate title. We met in person after a long, online limerence and you cut the lack of chemistry with a knife. She was a therapist. Though not mine in any sense."
+prompt: "scribbled line drawing of a pointed witch hat next to chunky frame glasses"
+model: "DALLE-3"
 ---
 
 To the Brain Witch
