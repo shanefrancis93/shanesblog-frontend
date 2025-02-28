@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cream text-[#8B4513] transition-colors duration-200 font-body;
+  }
+
+  .dark body {
+    @apply bg-darkgray text-gray-200;
+  }
+}
+
+@layer components {
+  .prose {
+    @apply max-w-none;
+  }
+
+  .prose h1 {
+    @apply text-4xl font-bold mb-8 text-gray-900 dark:text-white font-heading;
+  }
+
+  .prose p {
+    @apply text-gray-700 dark:text-gray-300 leading-relaxed;
+  }
+
+  .hover-lift {
+    @apply transition-transform duration-200;
+  }
+
+  .hover-lift:hover {
+    @apply -translate-y-0.5;
+  }
+
+  /* Annotation styles */
+  .annotation-container.show-all .annotation {
+    @apply opacity-100 relative translate-x-0 pointer-events-auto;
+  }
+
+  .annotation {
+    @apply absolute bg-white p-2 rounded border border-gray-200
+      opacity-0 transition-opacity duration-200 w-[200px];
+  }
+
+  .annotation-left {
+    @apply right-[calc(100%+1rem)];
+  }
+
+  .annotation-right {
+    @apply left-[calc(100%+1rem)];
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}

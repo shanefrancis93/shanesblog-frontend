@@ -1,0 +1,6 @@
+python-dotenv
+chromadb
+sentence-transformers
+openai
+pytest
+pytest-asyncio

@@ -1,0 +1,11 @@
+{
+  "words": [
+    "oaidalleapiprodscus",
+    "Pinterest"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "build/**"
+  ]
+}

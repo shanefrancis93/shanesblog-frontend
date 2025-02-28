@@ -1,0 +1,10 @@
+Metadata-Version: 2.2
+Name: blog_generator
+Version: 0.1
+Requires-Dist: python-dotenv
+Requires-Dist: chromadb
+Requires-Dist: sentence-transformers
+Requires-Dist: openai
+Requires-Dist: pytest
+Requires-Dist: pytest-asyncio
+Dynamic: requires-dist

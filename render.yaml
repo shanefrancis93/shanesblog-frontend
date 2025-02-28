@@ -2,8 +2,9 @@ services:
   - type: web
     name: shanesblog-frontend
     env: node
-    buildCommand: npm install && npm run build
-    startCommand: npm run start
+    rootDirectory: frontend
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run start
     envVars:
       - key: NODE_ENV
         value: production
