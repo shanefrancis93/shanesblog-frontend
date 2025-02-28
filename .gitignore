@@ -1,22 +1,6 @@
-# Dependencies
-node_modules/
-
-# Environment variables
+node_modules
+.next
 .env
-
-# Logs
-logs
-*.log
-npm-debug.log*
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# OS
+.env.local
 .DS_Store
-Thumbs.db 
-
 .psd
