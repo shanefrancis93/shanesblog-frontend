@@ -3,8 +3,8 @@ services:
     name: shanesblog-frontend
     env: node
     rootDirectory: frontend
-    buildCommand: cd frontend && npm install && npm run build
-    startCommand: cd frontend && npm run start
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
     envVars:
       - key: NODE_ENV
         value: production
