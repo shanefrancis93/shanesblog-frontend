@@ -11,11 +11,12 @@
     "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-scroll-area": "^1.2.3",
     "@shadcn/ui": "^0.0.4",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/marked": "^5.0.2",
     "@types/node": "20.11.19",
     "@types/react": "18.2.57",
     "@types/react-dom": "18.2.19",
-    "typescript": "5.3.3",
+    "autoprefixer": "^10.4.17",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "fast-average-color": "^9.4.0",
@@ -24,13 +25,14 @@
     "lucide-react": "^0.475.0",
     "marked": "^15.0.7",
     "next": "14.1.0",
+    "postcss": "^8.4.35",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-merge": "^3.0.1",
     "tailwindcss": "^3.4.1",
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.35",
-    "@tailwindcss/typography": "^0.5.16"
+    "typescript": "5.3.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0"
+  }
 }
