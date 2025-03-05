@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epistemic Task Assignment Pipeline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .graph-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            min-height: 400px;
+            height: auto;
+            width: 100%;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .implemented-label {
+            color: #166534;
+            background-color: #dcfce7;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .planned-label {
+            color: #1e40af;
+            background-color: #dbeafe;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">Epistemic Task Assignment Pipeline</h1>
+        
+        <p class="text-lg text-center mb-8 max-w-3xl mx-auto">
+            This interactive diagram shows the components of the Epistemic Task Assignment research pipeline. 
+            <span class="implemented-label">Green</span> components are implemented, while 
+            <span class="planned-label">Blue</span> components are planned for future development.
+            Click on any component to see more details.
+        </p>
+        
+        <div class="max-w-5xl mx-auto">
+            <!-- Back Button -->
+            <div id="back-button" class="hidden mb-4">
+                <button onclick="showMain()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+                    ← Back to Pipeline
+                </button>
+            </div>
+            
+            <!-- Main Pipeline View -->
+            <div id="main-pipeline" class="graph-container">
+                <pre class="mermaid">
+                    graph TD
+                    A["Input Processing"] --> B["Vector Database"]
+                    B --> C["LLM Orchestration"]
+                    C --> D["Research Generation"]
+                    D --> E["Content Assembly"]
+                    
+                    classDef implemented fill:#4ade80,stroke:#166534,color:#166534
+                    classDef planned fill:#93c5fd,stroke:#1e40af,color:#1e40af
+                    
+                    class A implemented
+                    class B,C,D,E planned
+                    
+                    click A callback
+                    click B callback
+                    click C callback
+                    click D callback
+                    click E callback
+                </pre>
+            </div>
+            
+            <!-- LLM Orchestration Detail View -->
+            <div id="llm-orchestration" class="graph-container hidden">
+                <pre class="mermaid">
+                    graph TD
+                    O["Orchestrator Class"] --> M1["Claude Model"]
+                    O --> M2["GPT-4 Model"]
+                    O --> M3["Gemini Model"]
+                    O --> P["Structured Prompting"]
+                    
+                    classDef component fill:#93c5fd,stroke:#1e40af,color:#1e40af
+                    class O,M1,M2,M3,P component
+                </pre>
+            </div>
+            
+            <!-- Knowledge Infrastructure Detail View -->
+            <div id="knowledge-infrastructure" class="graph-container hidden">
+                <pre class="mermaid">
+                    graph TD
+                    V["Chroma DB"] --> E["Text Embedding"]
+                    V --> U["User Messages Storage"]
+                    V --> R["Research Outputs Storage"]
+                    
+                    classDef component fill:#93c5fd,stroke:#1e40af,color:#1e40af
+                    class V,E,U,R component
+                </pre>
+            </div>
+
+            <!-- Input Processing Detail View -->
+            <div id="input-processing" class="graph-container hidden">
+                <pre class="mermaid">
+                    graph TD
+                    I["democracy.py"] --> T["Timestamp Preservation"]
+                    I --> M["Markdown Structuring"]
+                    
+                    classDef implemented fill:#4ade80,stroke:#166534,color:#166534
+                    class I,T,M implemented
+                </pre>
+            </div>
+
+            <!-- Research Generation Detail View -->
+            <div id="research-generation" class="graph-container hidden">
+                <pre class="mermaid">
+                    graph TD
+                    P["Deep Research Prompts"] --> S["Sectioned Output"]
+                    S --> C["Automatic Chunking"]
+                    C --> E["Embedding Generation"]
+                    
+                    classDef component fill:#93c5fd,stroke:#1e40af,color:#1e40af
+                    class P,S,C,E component
+                </pre>
+            </div>
+
+            <!-- Content Assembly Detail View -->
+            <div id="content-assembly" class="graph-container hidden">
+                <pre class="mermaid">
+                    graph TD
+                    B["Blog Post Generator"] --> F["Section Formatting"]
+                    B --> C["Citation Management"]
+                    B --> R["Reference Handling"]
+                    
+                    classDef component fill:#93c5fd,stroke:#1e40af,color:#1e40af
+                    class B,F,C,R component
+                </pre>
+            </div>
+            
+            <div class="text-center text-sm text-gray-500 mt-4">
+                <p>Click on any component in the diagram to explore its detailed structure.</p>
+            </div>
+        </div>
+
+        <!-- JavaScript for Interactive Diagram -->
+        <script>
+            // Initialize Mermaid with specific configuration
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                securityLevel: 'loose',
+                fontFamily: 'Inter, sans-serif'
+            });
+
+            // Define the callback function for Mermaid
+            window.callback = function(nodeId) {
+                console.log('Mermaid callback called with id:', nodeId);
+                
+                // Hide the main pipeline view
+                document.getElementById('main-pipeline').classList.add('hidden');
+                document.getElementById('back-button').classList.remove('hidden');
+                
+                // Show the appropriate detail view based on the node ID
+                if (nodeId === 'A') {
+                    document.getElementById('input-processing').classList.remove('hidden');
+                } else if (nodeId === 'B') {
+                    document.getElementById('knowledge-infrastructure').classList.remove('hidden');
+                } else if (nodeId === 'C') {
+                    document.getElementById('llm-orchestration').classList.remove('hidden');
+                } else if (nodeId === 'D') {
+                    document.getElementById('research-generation').classList.remove('hidden');
+                } else if (nodeId === 'E') {
+                    document.getElementById('content-assembly').classList.remove('hidden');
+                }
+            };
+
+            // Function to show main view
+            window.showMain = function() {
+                // Hide all detail views
+                document.getElementById('input-processing').classList.add('hidden');
+                document.getElementById('knowledge-infrastructure').classList.add('hidden');
+                document.getElementById('llm-orchestration').classList.add('hidden');
+                document.getElementById('research-generation').classList.add('hidden');
+                document.getElementById('content-assembly').classList.add('hidden');
+                
+                // Show main pipeline
+                document.getElementById('main-pipeline').classList.remove('hidden');
+                
+                // Hide back button
+                document.getElementById('back-button').classList.add('hidden');
+            };
+        </script>
+        <script src="pipeline-interaction.js"></script>
+    </div>
+</body>
+</html>
