@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Pipeline Diagram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: transparent;
+            overflow: hidden; /* Prevent scrolling within iframe */
+        }
+        
+        .graph-container {
+            width: 100%;
+            height: 100vh; /* Full height */
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .mermaid {
+            height: 90vh; /* Give plenty of room for the diagram */
+        }
+        
+        .instructions {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Make clickable nodes more obvious */
+        g.clickable rect, g.clickable circle {
+            cursor: pointer;
+        }
+        
+        g.clickable:hover rect, g.clickable:hover circle {
+            filter: brightness(1.1);
+            transition: filter 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Interactive Mermaid Diagram -->
+    <div class="graph-container" id="pipeline-container">
+        <div class="instructions">
+            <p>Click on the orange components to explore their detailed structure.</p>
+        </div>
+
+        <div class="mermaid" id="main-pipeline">
+            flowchart TD
+                classDef mainNode fill:#3d5a80,color:white,stroke-width:2px,font-weight:bold,padding:20px
+                classDef clickable fill:#ee6c4d,color:white,stroke-width:2px,font-weight:bold,padding:20px
+                classDef output fill:#98c1d9,color:#293241,stroke-width:2px,font-weight:bold,padding:20px
+                
+                A[Research Problem] --> B[Research Pipeline]
+                
+                subgraph Pipeline["Intelligent Research System"]
+                    direction TB
+                    C[LLM Orchestration Layer] -->|Populates| D[Research Template]
+                    D -->|Processed by| E[Deep Research Model]
+                    E -->|Stored in| F[Knowledge Infrastructure]
+                    F -->|Enables| G[Augmented Research Composition]
+                    G -.->|Feedback| C
+                end
+                
+                B --> Pipeline
+                Pipeline --> H[Final Research Output]
+                
+                %% Apply styles
+                class A,H output
+                class B mainNode
+                class C,D,E,F,G clickable
+
+                %% Add click handlers
+                click C call clickNode('llm-orchestration')
+                click F call clickNode('knowledge-infrastructure')
+        </div>
+        
+        <div class="mermaid hidden" id="llm-orchestration">
+            flowchart TD
+                classDef task fill:#F9F7F7,color:#3D5A80,stroke:#3D5A80,stroke-width:1px
+                classDef modelA fill:#FFD166,color:#333,stroke-width:1px
+                classDef modelB fill:#06D6A0,color:white,stroke-width:1px
+                classDef modelC fill:#118AB2,color:white,stroke-width:1px
+                classDef system fill:#073B4C,color:white,stroke-width:1px,font-weight:bold
+                classDef heading fill:#ee6c4d,color:white,stroke-width:2px,font-weight:bold,padding:10px
+                
+                O[LLM Orchestration Layer] --> B[Epistemic Task Decomposition]
+                
+                subgraph TaskModel["Task-Model Alignment"]
+                    B --> C[Task Profiles]
+                    
+                    C --- T1[Needle-in-Haystack]
+                    C --- T2[Hallucination Resistance]
+                    C --- T3[Instruction Following]
+                    C --- T4[Reasoning Chain Coherence]
+                    C --- T5[Counterfactual Reasoning]
+                    C --- T6[Knowledge Cutoff Awareness]
+                    
+                    D[Model Capability Profiles] --- M1[Model A]
+                    D --- M2[Model B]
+                    D --- M3[Model C]
+                    
+                    E[Benchmark Assessment] --> D
+                    
+                    %% Connecting tasks to models with colored lines
+                    T1 -. high match .-> M1
+                    T3 -. high match .-> M1
+                    
+                    T2 -. high match .-> M2
+                    T4 -. high match .-> M2
+                    
+                    T5 -. high match .-> M3
+                    T6 -. high match .-> M3
+                end
+                
+                F[Bidding System] --> G[Task Allocation]
+                
+                C --> F
+                D --> F
+                
+                G --> H1[Model A Tasks]
+                G --> H2[Model B Tasks] 
+                G --> H3[Model C Tasks]
+                
+                H1 --> I[Template Population]
+                H2 --> I
+                H3 --> I
+                
+                %% Apply styles
+                class O heading
+                class T1,T2,T3,T4,T5,T6 task
+                class M1,H1 modelA
+                class M2,H2 modelB
+                class M3,H3 modelC
+                class B,C,D,E,F,G system
+
+                %% Add click handlers
+                click O call clickBackToMain()
+        </div>
+        
+        <div class="mermaid hidden" id="knowledge-infrastructure">
+            flowchart TD
+                classDef heading fill:#ee6c4d,color:white,stroke-width:2px,font-weight:bold,padding:10px
+                classDef database fill:#023047,color:white,stroke-width:1px,font-weight:bold
+                classDef process fill:#219ebc,color:white,stroke-width:1px
+                classDef data fill:#8ecae6,color:#023047,stroke-width:1px
+                classDef system fill:#073B4C,color:white,stroke-width:1px,font-weight:bold
+                
+                A[Knowledge Infrastructure] --> B[Vector Database]
+                
+                subgraph VectorDB["Vector Database System"]
+                    B --> C[Document Chunking]
+                    C --> D[Embedding Generation]
+                    D --> E[Index Management]
+                    
+                    F[Research Documents] --> C
+                    G[Metadata Extraction] --> F
+                    H[Document Processing] --> F
+                end
+                
+                subgraph QuerSystem["Query System"]
+                    I[Query Interface]
+                    J[Semantic Search]
+                    K[Relevance Ranking]
+                    L[Context Window Assembly]
+                    
+                    I --> J
+                    J --> K
+                    K --> L
+                end
+                
+                E --> QuerSystem
+                
+                M[RAG Integration] --> I
+                
+                L --> N[LLM Context Provision]
+                
+                N --> O[Model Query Responses]
+                
+                %% Apply styles
+                class A heading
+                class B,E,I,J,K database
+                class C,D,G,H,M process
+                class F,L,N,O data
+
+                %% Add click handlers
+                click A call clickBackToMain()
+        </div>
+        
+        <div class="text-center mt-4">
+            <button id="back-button" class="hidden bg-blue-800 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition">
+                Return to Main View
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript for Interactive Diagram -->
+    <script>
+        // Helper function for Mermaid click callbacks
+        function clickNode(id) {
+            console.log('Clicked node for', id);
+            // Using timeout to ensure the function completes before switching views
+            setTimeout(() => {
+                showDetail(id);
+            }, 10);
+            return false;
+        }
+
+        function clickBackToMain() {
+            console.log('Clicked to return to main view');
+            // Using timeout to ensure the function completes before switching views
+            setTimeout(() => {
+                showMain();
+            }, 10);
+            return false;
+        }
+        
+        // Initialize Mermaid with click callback support
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose', // Required to allow click callbacks
+            fontFamily: 'Inter, sans-serif'
+        });
+        
+        // Track loaded state
+        let mermaidLoaded = false;
+        
+        // Ensure Mermaid diagrams are properly loaded
+        function initMermaid() {
+            if (mermaidLoaded) return;
+            
+            try {
+                mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+                mermaidLoaded = true;
+                console.log('Mermaid initialized');
+            } catch (e) {
+                console.error('Mermaid init error:', e);
+                // Try again in 500ms
+                setTimeout(initMermaid, 500);
+            }
+        }
+        
+        // Variables for diagram control
+        let mainPipeline;
+        let llmOrchestration;
+        let knowledgeInfrastructure;
+        let backButton;
+        
+        // Show detail view function
+        function showDetail(id) {
+            console.log('Showing detail:', id);
+            
+            // Hide main view
+            mainPipeline.classList.add('hidden');
+            
+            // Hide all detail views
+            llmOrchestration.classList.add('hidden');
+            knowledgeInfrastructure.classList.add('hidden');
+            
+            // Show selected detail view
+            document.getElementById(id)?.classList.remove('hidden');
+            
+            // Show back button
+            backButton.classList.remove('hidden');
+        }
+        
+        function showMain() {
+            console.log('Showing main view');
+            
+            // Hide all detail views
+            llmOrchestration.classList.add('hidden');
+            knowledgeInfrastructure.classList.add('hidden');
+            
+            // Show main view
+            mainPipeline.classList.remove('hidden');
+            
+            // Hide back button
+            backButton.classList.add('hidden');
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            
+            // Initialize Mermaid
+            initMermaid();
+            
+            // Get diagram elements
+            mainPipeline = document.getElementById('main-pipeline');
+            llmOrchestration = document.getElementById('llm-orchestration');
+            knowledgeInfrastructure = document.getElementById('knowledge-infrastructure');
+            backButton = document.getElementById('back-button');
+            
+            // Add click event for back button
+            backButton.addEventListener('click', showMain);
+        });
+
+        // Fallback initialization if DOMContentLoaded already fired
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            console.log('DOM already loaded, initializing immediately...');
+            setTimeout(() => {
+                // Initialize Mermaid
+                initMermaid();
+                
+                // Get diagram elements
+                mainPipeline = document.getElementById('main-pipeline');
+                llmOrchestration = document.getElementById('llm-orchestration');
+                knowledgeInfrastructure = document.getElementById('knowledge-infrastructure');
+                backButton = document.getElementById('back-button');
+                
+                // Add click event for back button
+                backButton.addEventListener('click', showMain);
+            }, 100);
+        }
+    </script>
+</body>
+</html>

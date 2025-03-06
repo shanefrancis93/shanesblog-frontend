@@ -3,215 +3,534 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Epistemic Task Assignment Pipeline</title>
+    <title>Epistemic Task Assignment Pipeline | Shane's Blog</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+    <!-- Updated to the latest 9.4.3 version with specific integrity hash -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@9.4.3/dist/mermaid.min.js" integrity="sha256-e0o3JYsdjqKajf9eOe22FhioYSz9WofRY4dLKo3F6do=" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        theme: {
+                            light: {
+                                bg: '#f5f2e8',      // Yellow-cream
+                                primary: '#5d4c7a',  // Red-violet
+                                secondary: '#586b4b', // Olive green
+                                text: '#2d1b38'      // Dark purple
+                            },
+                            dark: {
+                                bg: '#2D2D2D',      // Dark gray
+                                primary: '#e2e8f0',  // Light gray
+                                secondary: '#90cdf4', // Light blue
+                                text: '#f7fafc'      // Almost white
+                            }
+                        },
+                        node: {
+                            implemented: '#32CD32',  // accentGreen from main site
+                            planned: '#8A2BE2'      // accentPurple from main site
+                        }
+                    },
+                    fontFamily: {
+                        body: ['Inter', 'system-ui', 'sans-serif'],
+                        heading: ['Playfair Display', 'Georgia', 'serif'],
+                        serif: ['Playfair Display', 'Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
+        :root {
+            /* Base colors */
+            --color-primary: var(--color-theme-light-primary); 
+            --color-secondary: var(--color-theme-light-secondary);
+            --color-text: var(--color-theme-light-text);
+            
+            /* Theme colors */
+            --color-theme-light-bg: #f5f2e8;
+            --color-theme-light-primary: #5d4c7a;
+            --color-theme-light-secondary: #586b4b;
+            --color-theme-light-text: #2d1b38;
+            
+            --color-theme-dark-bg: #1A2B3B;
+            --color-theme-dark-primary: #e2e8f0;
+            --color-theme-dark-secondary: #90cdf4; 
+            --color-theme-dark-text: #f7fafc;
+            
+            /* Node colors */
+            --color-node-implemented: #32CD32;
+            --color-node-planned: #8A2BE2;
+            --color-node-stroke-implemented: #166534;
+            --color-node-stroke-planned: #4a1d96;
+            --color-edge: #666666;
+            --shadow-strength: 0.1;
+        }
+        
+        /* Properties applied in dark mode */
+        .dark {
+            --color-primary: var(--color-theme-dark-primary);
+            --color-secondary: var(--color-theme-dark-secondary);
+            --color-text: var(--color-theme-dark-text);
+        }
+        
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f9fafb;
-            color: #111827;
-            line-height: 1.5;
+            font-family: var(--font-inter), system-ui, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+        
         .graph-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, var(--shadow-strength));
             padding: 2rem;
             margin-bottom: 2rem;
-            min-height: 400px;
+            min-height: 500px;
             height: auto;
             width: 100%;
+            position: relative;
+            z-index: 1;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
+        
+        .dark .graph-container {
+            background-color: rgba(26, 43, 59, 0.3);
+        }
+        
+        .node rect {
+            transition: fill 0.3s ease, stroke 0.3s ease;
+        }
+        
+        .edge path {
+            transition: stroke 0.3s ease;
+        }
+        
+        .primary-btn {
+            background-color: var(--color-primary);
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        
+        .primary-btn:hover {
+            background-color: var(--color-secondary);
+        }
+        
+        .link {
+            color: var(--color-primary);
+            transition: color 0.3s ease;
+        }
+        
+        .link:hover {
+            color: var(--color-secondary);
+            text-decoration: underline;
+        }
+        
+        .implemented-label {
+            color: var(--color-node-stroke-implemented);
+            background-color: var(--color-node-implemented);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .planned-label {
+            color: var(--color-node-stroke-planned);
+            background-color: var(--color-node-planned);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .component-detail {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .hover-lift {
+            transition: transform 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+        
+        .mermaid .node {
+            font-size: 14px;
+        }
+        
+        .dark .node-status {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
         .hidden {
             display: none !important;
         }
-        .implemented-label {
-            color: #166534;
-            background-color: #dcfce7;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 600;
-            display: inline-block;
-            margin-right: 0.5rem;
-        }
-        .planned-label {
-            color: #1e40af;
-            background-color: #dbeafe;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 600;
-            display: inline-block;
-            margin-right: 0.5rem;
-        }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center mb-8">Epistemic Task Assignment Pipeline</h1>
-        
-        <p class="text-lg text-center mb-8 max-w-3xl mx-auto">
-            This interactive diagram shows the components of the Epistemic Task Assignment research pipeline. 
-            <span class="implemented-label">Green</span> components are implemented, while 
-            <span class="planned-label">Blue</span> components are planned for future development.
-            Click on any component to see more details.
-        </p>
-        
-        <div class="max-w-5xl mx-auto">
-            <!-- Back Button -->
-            <div id="back-button" class="hidden mb-4">
-                <button onclick="showMain()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
-                    ← Back to Pipeline
-                </button>
-            </div>
-            
-            <!-- Main Pipeline View -->
-            <div id="main-pipeline" class="graph-container">
-                <pre class="mermaid">
-                    graph TD
-                    A["Input Processing"] --> B["Vector Database"]
-                    B --> C["LLM Orchestration"]
-                    C --> D["Research Generation"]
-                    D --> E["Content Assembly"]
-                    
-                    classDef implemented fill:#4ade80,stroke:#166534,color:#166534
-                    classDef planned fill:#93c5fd,stroke:#1e40af,color:#1e40af
-                    
-                    class A implemented
-                    class B,C,D,E planned
-                    
-                    click A callback
-                    click B callback
-                    click C callback
-                    click D callback
-                    click E callback
-                </pre>
-            </div>
-            
-            <!-- LLM Orchestration Detail View -->
-            <div id="llm-orchestration" class="graph-container hidden">
-                <pre class="mermaid">
-                    graph TD
-                    O["Orchestrator Class"] --> M1["Claude Model"]
-                    O --> M2["GPT-4 Model"]
-                    O --> M3["Gemini Model"]
-                    O --> P["Structured Prompting"]
-                    
-                    classDef component fill:#93c5fd,stroke:#1e40af,color:#1e40af
-                    class O,M1,M2,M3,P component
-                </pre>
-            </div>
-            
-            <!-- Knowledge Infrastructure Detail View -->
-            <div id="knowledge-infrastructure" class="graph-container hidden">
-                <pre class="mermaid">
-                    graph TD
-                    V["Chroma DB"] --> E["Text Embedding"]
-                    V --> U["User Messages Storage"]
-                    V --> R["Research Outputs Storage"]
-                    
-                    classDef component fill:#93c5fd,stroke:#1e40af,color:#1e40af
-                    class V,E,U,R component
-                </pre>
-            </div>
+<body class="min-h-screen transition-all duration-200">
+    <!-- Mobile-optimized background -->
+    <div class="fixed inset-0 md:hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#E8F0FE] via-[#FAFAFA] to-[#F0F7FF] dark:from-[#1A2B3B] dark:via-[#0F1D2D] dark:to-[#162635] opacity-100"></div>
+        <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-[#6BA5F7]/20 to-transparent"></div>
+        <div class="absolute top-0 right-0 w-full h-64 bg-gradient-to-l from-[#9B7EF8]/20 to-transparent"></div>
+    </div>
+      
+    <!-- Desktop-optimized background -->
+    <div class="fixed inset-0 hidden md:block">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#E8F0FE] via-[#FAFAFA] to-[#F0F7FF] dark:from-[#1A2B3B] dark:via-[#0F1D2D] dark:to-[#162635] opacity-100"></div>
+        <div class="absolute top-0 left-0 w-1/2 h-screen bg-gradient-to-r from-[#6BA5F7]/10 to-transparent"></div>
+        <div class="absolute top-0 right-0 w-1/2 h-screen bg-gradient-to-l from-[#9B7EF8]/10 to-transparent"></div>
+    </div>
 
-            <!-- Input Processing Detail View -->
-            <div id="input-processing" class="graph-container hidden">
-                <pre class="mermaid">
-                    graph TD
-                    I["democracy.py"] --> T["Timestamp Preservation"]
-                    I --> M["Markdown Structuring"]
-                    
-                    classDef implemented fill:#4ade80,stroke:#166534,color:#166534
-                    class I,T,M implemented
-                </pre>
+    <!-- Content -->
+    <div class="relative z-10">
+        <!-- Header - Matching main site -->
+        <header class="sticky top-0 z-50 border-b border-gray-200/20 dark:border-transparent bg-gray-50 dark:bg-gray-900">
+            <div class="container mx-auto px-4 flex flex-col items-center max-w-6xl">
+                <!-- Title -->
+                <a href="/" class="text-2xl md:text-4xl font-serif text-theme-light-primary dark:text-theme-dark-primary hover:text-theme-light-text dark:hover:text-theme-dark-text transition-colors py-3 md:py-6 text-center">
+                    <span class="md:hidden">The Writing Desk of<br>Shane Farrow</span>
+                    <span class="hidden md:inline">The Writing Desk of Shane Farrow</span>
+                </a>
+                
+                <!-- Navigation -->
+                <nav class="py-2 md:py-4 w-full overflow-x-auto">
+                    <div class="flex items-center justify-center flex-nowrap gap-3 md:gap-6">
+                        <span class="flex items-center whitespace-nowrap">
+                            <a href="/blog" class="font-serif text-base md:text-3xl text-theme-light-text dark:text-theme-dark-text hover:text-theme-light-primary dark:hover:text-theme-dark-primary transition-colors">
+                                <span class="md:hidden">Blog</span>
+                                <span class="hidden md:inline">Blog</span>
+                            </a>
+                            <span class="ml-3 md:ml-8 text-xs md:text-2xl text-theme-light-secondary dark:text-theme-dark-secondary">◆</span>
+                        </span>
+                        
+                        <span class="flex items-center whitespace-nowrap">
+                            <a href="/tech-projects" class="font-serif text-base md:text-3xl text-theme-light-text dark:text-theme-dark-text hover:text-theme-light-primary dark:hover:text-theme-dark-primary transition-colors">
+                                <span class="md:hidden">Tech</span>
+                                <span class="hidden md:inline">Tech Projects</span>
+                            </a>
+                            <span class="ml-3 md:ml-8 text-xs md:text-2xl text-theme-light-secondary dark:text-theme-dark-secondary">◆</span>
+                        </span>
+                        
+                        <span class="flex items-center whitespace-nowrap">
+                            <a href="/creative-writing" class="font-serif text-base md:text-3xl text-theme-light-text dark:text-theme-dark-text hover:text-theme-light-primary dark:hover:text-theme-dark-primary transition-colors">
+                                <span class="md:hidden">Creative</span>
+                                <span class="hidden md:inline">Creative Projects</span>
+                            </a>
+                            <span class="ml-3 md:ml-8 text-xs md:text-2xl text-theme-light-secondary dark:text-theme-dark-secondary">◆</span>
+                        </span>
+                        
+                        <span class="flex items-center whitespace-nowrap">
+                            <a href="/about" class="font-serif text-base md:text-3xl text-theme-light-text dark:text-theme-dark-text hover:text-theme-light-primary dark:hover:text-theme-dark-primary transition-colors">
+                                <span class="md:hidden">About</span>
+                                <span class="hidden md:inline">About</span>
+                            </a>
+                        </span>
+                    </div>
+                </nav>
             </div>
+        </header>
 
-            <!-- Research Generation Detail View -->
-            <div id="research-generation" class="graph-container hidden">
-                <pre class="mermaid">
-                    graph TD
-                    P["Deep Research Prompts"] --> S["Sectioned Output"]
-                    S --> C["Automatic Chunking"]
-                    C --> E["Embedding Generation"]
-                    
-                    classDef component fill:#93c5fd,stroke:#1e40af,color:#1e40af
-                    class P,S,C,E component
-                </pre>
-            </div>
-
-            <!-- Content Assembly Detail View -->
-            <div id="content-assembly" class="graph-container hidden">
-                <pre class="mermaid">
-                    graph TD
-                    B["Blog Post Generator"] --> F["Section Formatting"]
-                    B --> C["Citation Management"]
-                    B --> R["Reference Handling"]
-                    
-                    classDef component fill:#93c5fd,stroke:#1e40af,color:#1e40af
-                    class B,F,C,R component
-                </pre>
-            </div>
-            
-            <div class="text-center text-sm text-gray-500 mt-4">
-                <p>Click on any component in the diagram to explore its detailed structure.</p>
-            </div>
+        <!-- Theme Toggle - Same position as main site -->
+        <div class="fixed top-4 right-4 flex items-center gap-2 z-50" id="theme-toggle-container">
+            <!-- Toggle button -->
+            <button
+                id="theme-toggle-button"
+                class="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-lg border border-gray-200 dark:border-gray-700 transition-all z-50"
+                aria-label="Toggle theme"
+            >
+                <!-- Icon will be inserted by JS -->
+            </button>
         </div>
 
-        <!-- JavaScript for Interactive Diagram -->
-        <script>
-            // Initialize Mermaid with specific configuration
-            mermaid.initialize({
-                startOnLoad: true,
-                theme: 'default',
-                securityLevel: 'loose',
-                fontFamily: 'Inter, sans-serif'
-            });
-
-            // Define the callback function for Mermaid
-            window.callback = function(nodeId) {
-                console.log('Mermaid callback called with id:', nodeId);
+        <!-- Main Content Area -->
+        <main class="container mx-auto px-4 py-2 md:py-4 max-w-6xl backdrop-blur-sm bg-white/30 dark:bg-[#1A2B3B]/30 rounded-lg shadow-lg">
+            <!-- Breadcrumb -->
+            <div class="text-sm my-4">
+                <a href="/" class="link">Home</a> &gt; 
+                <a href="/tech-projects" class="link">Tech Projects</a> &gt; 
+                <span>Epistemic Task Assignment Pipeline</span>
+            </div>
+            
+            <h1 class="text-4xl font-bold mb-6 font-serif text-theme-light-primary dark:text-theme-dark-primary">Epistemic Task Assignment Pipeline</h1>
+            
+            <p class="text-lg mb-8 text-theme-light-text dark:text-theme-dark-text">
+                An interactive visualization of the multi-model AI research pipeline for automatically generating deep research content.
+            </p>
+            
+            <!-- Pipeline Container -->
+            <div class="max-w-5xl mx-auto">
+                <!-- Back Button -->
+                <div id="back-button" class="hidden mb-6">
+                    <button class="px-4 py-2 bg-theme-light-primary dark:bg-theme-dark-primary text-white dark:text-gray-900 rounded hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary transition-colors font-medium hover-lift">
+                        ← Back to Pipeline Overview
+                    </button>
+                </div>
                 
-                // Hide the main pipeline view
-                document.getElementById('main-pipeline').classList.add('hidden');
-                document.getElementById('back-button').classList.remove('hidden');
+                <!-- Main Pipeline View -->
+                <div id="main-pipeline">
+                    <svg width="100%" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Pipeline Components -->
+                        <!-- Input Processing (Implemented) -->
+                        <g id="input-processing" class="node clickable" onclick="window.callback('input-processing')">
+                            <rect x="50" y="100" width="150" height="60" rx="5" fill="var(--color-node-implemented)" stroke="var(--color-node-stroke-implemented)" stroke-width="2"></rect>
+                            <text x="125" y="140" text-anchor="middle" fill="var(--color-node-stroke-implemented)" font-weight="bold">Input Processing</text>
+                        </g>
+                        
+                        <!-- Vector Database (Planned) -->
+                        <g id="knowledge-infrastructure" class="node clickable" onclick="window.callback('knowledge-infrastructure')">
+                            <rect x="300" y="100" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="375" y="140" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Vector Database</text>
+                        </g>
+                        
+                        <!-- LLM Orchestration (Planned) -->
+                        <g id="llm-orchestration" class="node clickable" onclick="window.callback('llm-orchestration')">
+                            <rect x="550" y="100" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="625" y="140" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">LLM Orchestration</text>
+                        </g>
+                        
+                        <!-- Research Generation (Planned) -->
+                        <g id="research-generation" class="node clickable" onclick="window.callback('research-generation')">
+                            <rect x="300" y="220" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="375" y="260" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Research Generation</text>
+                        </g>
+                        
+                        <!-- Content Assembly (Planned) -->
+                        <g id="content-assembly" class="node clickable" onclick="window.callback('content-assembly')">
+                            <rect x="550" y="220" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="625" y="260" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Content Assembly</text>
+                        </g>
+                        
+                        <!-- Connection Arrows -->
+                        <path d="M200 130 L300 130" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead)"></path>
+                        <path d="M450 130 L550 130" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead)"></path>
+                        <path d="M625 160 L625 220" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead)"></path>
+                        <path d="M450 250 L550 250" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead)"></path>
+                        
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="var(--color-edge)"></polygon>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
                 
-                // Show the appropriate detail view based on the node ID
-                if (nodeId === 'A') {
-                    document.getElementById('input-processing').classList.remove('hidden');
-                } else if (nodeId === 'B') {
-                    document.getElementById('knowledge-infrastructure').classList.remove('hidden');
-                } else if (nodeId === 'C') {
-                    document.getElementById('llm-orchestration').classList.remove('hidden');
-                } else if (nodeId === 'D') {
-                    document.getElementById('research-generation').classList.remove('hidden');
-                } else if (nodeId === 'E') {
-                    document.getElementById('content-assembly').classList.remove('hidden');
-                }
-            };
-
-            // Function to show main view
-            window.showMain = function() {
-                // Hide all detail views
-                document.getElementById('input-processing').classList.add('hidden');
-                document.getElementById('knowledge-infrastructure').classList.add('hidden');
-                document.getElementById('llm-orchestration').classList.add('hidden');
-                document.getElementById('research-generation').classList.add('hidden');
-                document.getElementById('content-assembly').classList.add('hidden');
+                <!-- Detail views rendered as static SVGs - hide them initially -->
+                <div id="llm-orchestration-detail" class="hidden">
+                    <svg width="100%" height="400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- LLM Orchestration Detail Components -->
+                        <g>
+                            <rect x="300" y="50" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="375" y="90" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Orchestrator</text>
+                        </g>
+                        
+                        <!-- Models -->
+                        <g>
+                            <rect x="100" y="200" width="120" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="160" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Claude</text>
+                        </g>
+                        
+                        <g>
+                            <rect x="250" y="200" width="120" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="310" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">GPT-4</text>
+                        </g>
+                        
+                        <g>
+                            <rect x="400" y="200" width="120" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="460" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Gemini</text>
+                        </g>
+                        
+                        <g>
+                            <rect x="550" y="200" width="120" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="610" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Prompting</text>
+                        </g>
+                        
+                        <!-- Connection lines -->
+                        <path d="M375 110 L160 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead2)"></path>
+                        <path d="M375 110 L310 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead2)"></path>
+                        <path d="M375 110 L460 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead2)"></path>
+                        <path d="M375 110 L610 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead2)"></path>
+                        
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="var(--color-edge)"></polygon>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
                 
-                // Show main pipeline
-                document.getElementById('main-pipeline').classList.remove('hidden');
+                <!-- Knowledge Infrastructure Detail View -->
+                <div id="knowledge-infrastructure-detail" class="hidden">
+                    <svg width="100%" height="400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Knowledge Infrastructure Detail Components -->
+                        <g>
+                            <rect x="300" y="50" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="375" y="90" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Chroma DB</text>
+                        </g>
+                        
+                        <!-- Components -->
+                        <g>
+                            <rect x="150" y="200" width="150" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="225" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Embeddings</text>
+                        </g>
+                        
+                        <g>
+                            <rect x="350" y="200" width="150" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="425" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Messages</text>
+                        </g>
+                        
+                        <g>
+                            <rect x="550" y="200" width="150" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="625" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Research</text>
+                        </g>
+                        
+                        <!-- Connection lines -->
+                        <path d="M375 110 L225 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead3)"></path>
+                        <path d="M375 110 L425 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead3)"></path>
+                        <path d="M375 110 L625 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead3)"></path>
+                        
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="var(--color-edge)"></polygon>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
                 
-                // Hide back button
-                document.getElementById('back-button').classList.add('hidden');
-            };
-        </script>
-        <script src="pipeline-interaction.js"></script>
+                <!-- Input Processing Detail View -->
+                <div id="input-processing-detail" class="hidden">
+                    <svg width="100%" height="400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Input Processing Detail Components -->
+                        <g>
+                            <rect x="300" y="50" width="150" height="60" rx="5" fill="var(--color-node-implemented)" stroke="var(--color-node-stroke-implemented)" stroke-width="2"></rect>
+                            <text x="375" y="90" text-anchor="middle" fill="var(--color-node-stroke-implemented)" font-weight="bold">democracy.py</text>
+                        </g>
+                        
+                        <!-- Components -->
+                        <g>
+                            <rect x="150" y="200" width="150" height="50" rx="5" fill="var(--color-node-implemented)" stroke="var(--color-node-stroke-implemented)" stroke-width="2"></rect>
+                            <text x="225" y="230" text-anchor="middle" fill="var(--color-node-stroke-implemented)" font-weight="bold">Timestamps</text>
+                        </g>
+                        
+                        <g>
+                            <rect x="350" y="200" width="150" height="50" rx="5" fill="var(--color-node-implemented)" stroke="var(--color-node-stroke-implemented)" stroke-width="2"></rect>
+                            <text x="425" y="230" text-anchor="middle" fill="var(--color-node-stroke-implemented)" font-weight="bold">Markdown</text>
+                        </g>
+                        
+                        <!-- Connection lines -->
+                        <path d="M375 110 L225 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead4)"></path>
+                        <path d="M375 110 L425 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead4)"></path>
+                        
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="var(--color-edge)"></polygon>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+                
+                <!-- Research Generation Detail View -->
+                <div id="research-generation-detail" class="hidden">
+                    <svg width="100%" height="400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Research Generation Detail Components -->
+                        <g>
+                            <rect x="300" y="50" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="375" y="90" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Research Prompts</text>
+                        </g>
+                        
+                        <!-- Components -->
+                        <g>
+                            <rect x="150" y="200" width="150" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="225" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Sections</text>
+                        </g>
+                        
+                        <g>
+                            <rect x="350" y="200" width="150" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="425" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Chunking</text>
+                        </g>
+                        
+                        <!-- Connection lines -->
+                        <path d="M375 110 L225 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead5)"></path>
+                        <path d="M375 110 L425 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead5)"></path>
+                        
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead5" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="var(--color-edge)"></polygon>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+                
+                <!-- Content Assembly Detail View -->
+                <div id="content-assembly-detail" class="hidden">
+                    <svg width="100%" height="400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Content Assembly Detail Components -->
+                        <g>
+                            <rect x="300" y="50" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="375" y="90" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Blog Generator</text>
+                        </g>
+                        
+                        <!-- Components -->
+                        <g>
+                            <rect x="150" y="200" width="150" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="225" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Formatting</text>
+                        </g>
+                        
+                        <g>
+                            <rect x="350" y="200" width="150" height="50" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
+                            <text x="425" y="230" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Citations</text>
+                        </g>
+                        
+                        <!-- Connection lines -->
+                        <path d="M375 110 L225 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead6)"></path>
+                        <path d="M375 110 L425 200" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead6)"></path>
+                        
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead6" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="var(--color-edge)"></polygon>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="text-center text-sm text-gray-500 mt-4 mb-12">
+                <p>Click on any component in the diagram to explore its detailed structure.</p>
+            </div>
+            
+            <div class="mt-12 p-6 bg-primary/5 rounded-lg">
+                <h2 class="text-2xl font-heading font-bold mb-4">About This Pipeline</h2>
+                <p class="mb-4">
+                    The Epistemic Task Assignment Pipeline is a novel framework for optimizing multi-model collaboration in complex research tasks. It recognizes that different AI models excel at different cognitive tasks and orchestrates their collaboration accordingly.
+                </p>
+                <p>
+                    This project is part of our ongoing research into AI systems that can perform deep, comprehensive research by leveraging the unique strengths of various large language models.
+                </p>
+                <div class="mt-6">
+                    <a href="/tech-projects/projects/epistemic-task-assign" class="text-primary font-medium hover:underline">← Return to Project Page</a>
+                </div>
+            </div>
+        </main>
     </div>
+    
+    <footer class="bg-primary/5 py-8 mt-12 border-t border-primary/10">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>&copy; 2025 Shane's Blog. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="pipeline-interaction.js"></script>
 </body>
 </html>

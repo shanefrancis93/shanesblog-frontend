@@ -31,6 +31,14 @@ highlights:
 
 This project explores a novel approach to AI research through intelligent task decomposition and multi-model orchestration. The interactive diagram below illustrates the complete research pipeline architecture.
 
+## Interactive Diagram
+
+Explore the interactive diagram below to understand the relationships between different components of the research pipeline. Click on any component to see its detailed structure.
+
+<div class="py-4 my-4">
+  <iframe src="http://localhost:3001/tech-projects/projects/epistemic-task-assign/diagram.html" width="100%" height="1000" frameborder="0" scrolling="no" style="min-height: 1000px;"></iframe>
+</div>
+
 ## Pipeline Components
 
 ### 1. Input Processing (Implemented)
@@ -57,9 +65,3 @@ This project explores a novel approach to AI research through intelligent task d
 - Final blog post generation
 - Section collapsing and formatting
 - Citation and reference management
-
-## Interactive Diagram
-
-Explore the interactive diagram in the HTML file to understand the relationships between different components of the research pipeline. Click on any component to see its detailed structure.
-
-[View Interactive Pipeline Diagram](/tech-projects/projects/epistemic-task-assign/index.html)

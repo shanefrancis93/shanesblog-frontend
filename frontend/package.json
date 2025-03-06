@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "npm run compile-public-ts && next build",
+    "start": "next start",
+    "compile-public-ts": "tsc --project ./public/tech-projects/projects/epistemic-task-assign/tsconfig.json"
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.0.3",

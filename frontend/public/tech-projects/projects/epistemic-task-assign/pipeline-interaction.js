@@ -1,155 +1,205 @@
-// Wait for mermaid to render
-document.addEventListener('DOMContentLoaded', function() {
-    // Allow more time for mermaid to fully render
-    setTimeout(() => {
-        // Get all view containers
+/// <reference path="./mermaid.d.ts" />
+// This is the source of truth for pipeline interaction code.
+// Edit this file and then run 'npm run compile-public-ts' to generate the JS file.
+// pipeline-interaction.ts - Advanced interaction for the Epistemic Task Assignment Pipeline visualization
+// Wait for the DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded, initializing pipeline interaction');
+    try {
+        console.log('Pipeline interaction script initialized');
+        // Define the callback function for SVG node clicks
+        window.callback = function (nodeId) {
+            console.log('Node clicked:', nodeId);
+            showDetailView(nodeId);
+        };
+        // Initialize theme based on time of day
+        initializeTheme();
+        // Set up event handlers
+        setupEventHandlers();
+        // Setup theme toggle
+        setupThemeToggle();
+    }
+    catch (error) {
+        console.error('Error initializing pipeline interaction:', error);
+    }
+    // Function to initialize theme based on time of day, matching the main site's approach
+    function initializeTheme() {
+        const isNightTime = () => {
+            const hour = new Date().getHours();
+            return hour < 6 || hour >= 18; // Before 6am or after 6pm = dark mode
+        };
+        // Apply theme based on time
+        const shouldBeDark = isNightTime();
+        document.documentElement.classList.toggle('dark', shouldBeDark);
+        console.log(`Time-based theme initialized: ${shouldBeDark ? 'dark' : 'light'} mode`);
+        // Update theme toggle button appearance
+        updateThemeToggleButton();
+    }
+    // Function to set up the theme toggle
+    function setupThemeToggle() {
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        if (!themeToggleButton) {
+            console.error('Theme toggle button not found');
+            return;
+        }
+        // Add theme toggle button icons
+        updateThemeToggleButton();
+        // Add click event listener for theme toggle
+        themeToggleButton.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            updateThemeToggleButton();
+            console.log('Theme toggled to:', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+    }
+    // Function to update theme toggle button appearance
+    function updateThemeToggleButton() {
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        if (!themeToggleButton)
+            return;
+        const isDark = document.documentElement.classList.contains('dark');
+        // Set the appropriate icon based on the current theme
+        themeToggleButton.innerHTML = isDark
+            ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" /></svg>'
+            : '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg>';
+    }
+    // Function to show a specific detail view
+    function showDetailView(componentId) {
+        console.log('Showing detail view:', componentId);
+        // Hide the main pipeline view
         const mainPipeline = document.getElementById('main-pipeline');
-        const inputProcessing = document.getElementById('input-processing');
-        const vectorDatabase = document.getElementById('knowledge-infrastructure'); // Using knowledge-infrastructure for vector database
-        const llmOrchestration = document.getElementById('llm-orchestration');
-        const researchGeneration = document.getElementById('research-generation');
-        const contentAssembly = document.getElementById('content-assembly');
+        mainPipeline === null || mainPipeline === void 0 ? void 0 : mainPipeline.classList.add('hidden');
+        // Hide all detail views first
+        const views = [
+            document.getElementById('input-processing-detail'),
+            document.getElementById('knowledge-infrastructure-detail'),
+            document.getElementById('llm-orchestration-detail'),
+            document.getElementById('research-generation-detail'),
+            document.getElementById('content-assembly-detail')
+        ];
+        views.forEach(view => {
+            if (view)
+                view.classList.add('hidden');
+        });
+        // Show the requested detail view
+        const detailView = document.getElementById(`${componentId}-detail`);
+        if (detailView) {
+            detailView.classList.remove('hidden');
+            // Show the back button
+            const backButton = document.getElementById('back-button');
+            if (backButton)
+                backButton.classList.remove('hidden');
+            // Update component info
+            updateComponentInfo(componentId);
+        }
+        else {
+            console.error('Detail view not found:', `${componentId}-detail`);
+        }
+    }
+    // Function to show the main view
+    function showMainView() {
+        console.log('Showing main view');
+        // Hide all detail views
+        const views = [
+            document.getElementById('input-processing-detail'),
+            document.getElementById('knowledge-infrastructure-detail'),
+            document.getElementById('llm-orchestration-detail'),
+            document.getElementById('research-generation-detail'),
+            document.getElementById('content-assembly-detail')
+        ];
+        views.forEach(view => {
+            if (view)
+                view.classList.add('hidden');
+        });
+        // Show the main pipeline view
+        const mainPipeline = document.getElementById('main-pipeline');
+        if (mainPipeline)
+            mainPipeline.classList.remove('hidden');
+        // Hide the back button
         const backButton = document.getElementById('back-button');
-        
-        console.log('Pipeline interaction script loaded');
-
-        // Add direct click handlers to specific elements after Mermaid has rendered
-        function addClickHandlers() {
-            // Find all elements with the 'clickable' class
-            const clickableElements = document.querySelectorAll('.clickable');
-            console.log('Found clickable elements:', clickableElements.length);
-            
-            // Add direct click handlers to each clickable element
-            clickableElements.forEach(element => {
-                element.style.cursor = 'pointer'; // Ensure cursor shows as pointer
-                element.addEventListener('click', function(e) {
-                    const text = this.textContent || '';
-                    console.log('Clickable element clicked:', text);
-                    
-                    if (text.includes('Input Processing')) {
-                        showDetail('input-processing');
-                    } else if (text.includes('Vector Database')) {
-                        showDetail('knowledge-infrastructure');
-                    } else if (text.includes('LLM Orchestration')) {
-                        showDetail('llm-orchestration');
-                    } else if (text.includes('Research Generation')) {
-                        showDetail('research-generation');
-                    } else if (text.includes('Content Assembly')) {
-                        showDetail('content-assembly');
-                    }
-                    
-                    e.stopPropagation(); // Prevent event bubbling
-                });
+        if (backButton)
+            backButton.classList.add('hidden');
+        // Reset component info
+        resetComponentInfo();
+    }
+    // Function to update component information
+    function updateComponentInfo(componentId) {
+        console.log('Updating component info for:', componentId);
+        const componentTitle = document.getElementById('component-title');
+        const componentStatus = document.getElementById('component-status');
+        const componentDescription = document.getElementById('component-description');
+        if (!componentTitle || !componentStatus || !componentDescription) {
+            console.error('Component info elements not found');
+            return;
+        }
+        let title = '';
+        let status = '';
+        let description = '';
+        switch (componentId) {
+            case 'input-processing':
+                title = 'Input Processing';
+                status = 'Implemented';
+                description = 'Extracts and structures user messages from transcripts, preserving temporal context and formatting as markdown.';
+                break;
+            case 'knowledge-infrastructure':
+                title = 'Vector Database';
+                status = 'Planned';
+                description = 'Stores and retrieves knowledge using Chroma DB with text-embedding-ada-002 embeddings for both user messages and research outputs.';
+                break;
+            case 'llm-orchestration':
+                title = 'LLM Orchestration';
+                status = 'Planned';
+                description = 'Coordinates multiple AI models (Claude, GPT-4, Gemini) with a structured prompting system for optimal task routing.';
+                break;
+            case 'research-generation':
+                title = 'Research Generation';
+                status = 'Planned';
+                description = 'Creates in-depth research content with sectioned output in markdown/JSON format and automatic chunking for embedding.';
+                break;
+            case 'content-assembly':
+                title = 'Content Assembly';
+                status = 'Planned';
+                description = 'Generates the final blog post with section collapsing, formatting, and citation/reference management.';
+                break;
+            default:
+                console.error('Unknown component ID:', componentId);
+                return;
+        }
+        componentTitle.textContent = title;
+        componentStatus.textContent = status;
+        componentDescription.textContent = description;
+        // Update status based on theme-compatible classes
+        componentStatus.className = 'px-2 py-1 rounded text-sm font-semibold';
+        if (status === 'Implemented') {
+            componentStatus.classList.add('implemented-label');
+        }
+        else {
+            componentStatus.classList.add('planned-label');
+        }
+    }
+    // Function to reset component information
+    function resetComponentInfo() {
+        console.log('Resetting component info');
+        const componentTitle = document.getElementById('component-title');
+        const componentStatus = document.getElementById('component-status');
+        const componentDescription = document.getElementById('component-description');
+        if (componentTitle)
+            componentTitle.textContent = 'Pipeline Overview';
+        if (componentStatus) {
+            componentStatus.textContent = 'Interactive';
+            componentStatus.className = 'px-2 py-1 rounded text-sm font-semibold text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-gray-700';
+        }
+        if (componentDescription)
+            componentDescription.textContent = 'Click on any component in the diagram to see more details.';
+    }
+    // Function to setup event handlers
+    function setupEventHandlers() {
+        // Set up back button functionality
+        const backButton = document.getElementById('back-button');
+        if (backButton) {
+            backButton.addEventListener('click', function () {
+                showMainView();
             });
         }
-        
-        // Try to add click handlers after a delay
-        setTimeout(addClickHandlers, 1000);
-        
-        // Add click event listeners to the entire document as a fallback
-        document.addEventListener('click', (event) => {
-            const target = event.target;
-            console.log('Clicked element:', target.tagName, target.textContent);
-            
-            // Check if clicked element is within an SVG
-            if (target.closest('svg')) {
-                // Get all parent elements up to the SVG
-                let currentElement = target;
-                let found = false;
-                
-                // Check the clicked element and all its parent elements for relevant text
-                while (currentElement && !found && !(currentElement.tagName === 'DIV' && currentElement.classList.contains('graph-container'))) {
-                    const text = currentElement.textContent || '';
-                    console.log('Checking element:', currentElement.tagName, text);
-                    
-                    if (text.includes('Input Processing')) {
-                        console.log('Found Input Processing');
-                        showDetail('input-processing');
-                        found = true;
-                    } else if (text.includes('Vector Database')) {
-                        console.log('Found Vector Database');
-                        showDetail('knowledge-infrastructure');
-                        found = true;
-                    } else if (text.includes('LLM Orchestration')) {
-                        console.log('Found LLM Orchestration');
-                        showDetail('llm-orchestration');
-                        found = true;
-                    } else if (text.includes('Research Generation')) {
-                        console.log('Found Research Generation');
-                        showDetail('research-generation');
-                        found = true;
-                    } else if (text.includes('Content Assembly')) {
-                        console.log('Found Content Assembly');
-                        showDetail('content-assembly');
-                        found = true;
-                    }
-                    
-                    currentElement = currentElement.parentElement;
-                }
-            }
-            
-            // Handle back button click
-            if (target === backButton || target.closest('#back-button')) {
-                showMain();
-            }
-        });
-        
-        // Function to show a specific detail view
-        function showDetail(id) {
-            console.log('Showing detail:', id);
-            // Hide main view
-            mainPipeline.classList.add('hidden');
-            
-            // Hide all detail views
-            inputProcessing.classList.add('hidden');
-            vectorDatabase.classList.add('hidden');
-            llmOrchestration.classList.add('hidden');
-            researchGeneration.classList.add('hidden');
-            contentAssembly.classList.add('hidden');
-            
-            // Show selected detail view
-            const detailElement = document.getElementById(id);
-            if (detailElement) {
-                detailElement.classList.remove('hidden');
-            } else {
-                console.error('Detail element not found:', id);
-            }
-            
-            // Show back button
-            backButton.classList.remove('hidden');
-        }
-        
-        // Function to show the main pipeline view
-        function showMain() {
-            console.log('Showing main view');
-            // Hide all detail views
-            inputProcessing.classList.add('hidden');
-            vectorDatabase.classList.add('hidden');
-            llmOrchestration.classList.add('hidden');
-            researchGeneration.classList.add('hidden');
-            contentAssembly.classList.add('hidden');
-            
-            // Show main view
-            mainPipeline.classList.remove('hidden');
-            
-            // Hide back button
-            backButton.classList.add('hidden');
-        }
-
-        // Add Mermaid callback function to window object
-        window.callback = function(id) {
-            console.log('Mermaid callback called with id:', id);
-            if (id === 'A') {
-                showDetail('input-processing');
-            } else if (id === 'B') {
-                showDetail('knowledge-infrastructure');
-            } else if (id === 'C') {
-                showDetail('llm-orchestration');
-            } else if (id === 'D') {
-                showDetail('research-generation');
-            } else if (id === 'E') {
-                showDetail('content-assembly');
-            }
-        };
-    }, 2000); // Increased timeout to ensure mermaid has fully rendered
+        // Add more event handlers as needed
+    }
 });
