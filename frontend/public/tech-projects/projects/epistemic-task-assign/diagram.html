@@ -1,330 +1,480 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research Pipeline Diagram</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            background-color: transparent;
-            overflow: hidden; /* Prevent scrolling within iframe */
-        }
-        
-        .graph-container {
-            width: 100%;
-            height: 100vh; /* Full height */
-            background-color: #f8fafc;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        .mermaid {
-            height: 90vh; /* Give plenty of room for the diagram */
-        }
-        
-        .instructions {
-            text-align: center;
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-top: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research Pipeline</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f7fa;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+    
+    p.instruction {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+    
+    svg {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+    
+    .node rect {
+      stroke: #333;
+      stroke-width: 1.5px;
+    }
+    
+    .node text {
+    font-size: 14px;
+    font-weight: bold;
+    text-anchor: middle;
+    alignment-baseline: middle;
+}
 
-        /* Make clickable nodes more obvious */
-        g.clickable rect, g.clickable circle {
-            cursor: pointer;
-        }
-        
-        g.clickable:hover rect, g.clickable:hover circle {
-            filter: brightness(1.1);
-            transition: filter 0.3s ease;
-        }
-    </style>
+    .link {
+      fill: none;
+      stroke: #666;
+      stroke-width: 1.5px;
+    }
+    
+    .link-label {
+      font-size: 12px;
+      fill: #666;
+      text-anchor: middle;
+    }
+    
+    .main-node {
+      fill: #3d5a80;
+    }
+    
+    .clickable-node {
+      fill: #ee6c4d;
+      cursor: pointer;
+    }
+    
+    .output-node {
+      fill: #98c1d9;
+    }
+    
+    .white-text {
+      fill: white;
+    }
+    
+    .dark-text {
+      fill: #333;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    #back-btn {
+      display: none;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #3d5a80;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    #back-btn:hover {
+      background-color: #2c3e50;
+    }
+  </style>
 </head>
 <body>
-    <!-- Interactive Mermaid Diagram -->
-    <div class="graph-container" id="pipeline-container">
-        <div class="instructions">
-            <p>Click on the orange components to explore their detailed structure.</p>
-        </div>
-
-        <div class="mermaid" id="main-pipeline">
-            flowchart TD
-                classDef mainNode fill:#3d5a80,color:white,stroke-width:2px,font-weight:bold,padding:20px
-                classDef clickable fill:#ee6c4d,color:white,stroke-width:2px,font-weight:bold,padding:20px
-                classDef output fill:#98c1d9,color:#293241,stroke-width:2px,font-weight:bold,padding:20px
-                
-                A[Research Problem] --> B[Research Pipeline]
-                
-                subgraph Pipeline["Intelligent Research System"]
-                    direction TB
-                    C[LLM Orchestration Layer] -->|Populates| D[Research Template]
-                    D -->|Processed by| E[Deep Research Model]
-                    E -->|Stored in| F[Knowledge Infrastructure]
-                    F -->|Enables| G[Augmented Research Composition]
-                    G -.->|Feedback| C
-                end
-                
-                B --> Pipeline
-                Pipeline --> H[Final Research Output]
-                
-                %% Apply styles
-                class A,H output
-                class B mainNode
-                class C,D,E,F,G clickable
-
-                %% Add click handlers
-                click C call clickNode('llm-orchestration')
-                click F call clickNode('knowledge-infrastructure')
-        </div>
+  <div class="container">
+    <h1>Research Pipeline</h1>
+    <p class="instruction">Click on orange components to see detailed views</p>
+    
+    <button id="back-btn">Back to Main View</button>
+    
+    <div id="main-view">
+      <svg width="600" height="650" viewBox="0 0 600 650">
+        <!-- Main Diagram -->
+        <!-- Research Problem -->
+        <g class="node" transform="translate(300, 50)">
+          <rect class="output-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="dark-text">Research Problem</text>
+        </g>
         
-        <div class="mermaid hidden" id="llm-orchestration">
-            flowchart TD
-                classDef task fill:#F9F7F7,color:#3D5A80,stroke:#3D5A80,stroke-width:1px
-                classDef modelA fill:#FFD166,color:#333,stroke-width:1px
-                classDef modelB fill:#06D6A0,color:white,stroke-width:1px
-                classDef modelC fill:#118AB2,color:white,stroke-width:1px
-                classDef system fill:#073B4C,color:white,stroke-width:1px,font-weight:bold
-                classDef heading fill:#ee6c4d,color:white,stroke-width:2px,font-weight:bold,padding:10px
-                
-                O[LLM Orchestration Layer] --> B[Epistemic Task Decomposition]
-                
-                subgraph TaskModel["Task-Model Alignment"]
-                    B --> C[Task Profiles]
-                    
-                    C --- T1[Needle-in-Haystack]
-                    C --- T2[Hallucination Resistance]
-                    C --- T3[Instruction Following]
-                    C --- T4[Reasoning Chain Coherence]
-                    C --- T5[Counterfactual Reasoning]
-                    C --- T6[Knowledge Cutoff Awareness]
-                    
-                    D[Model Capability Profiles] --- M1[Model A]
-                    D --- M2[Model B]
-                    D --- M3[Model C]
-                    
-                    E[Benchmark Assessment] --> D
-                    
-                    %% Connecting tasks to models with colored lines
-                    T1 -. high match .-> M1
-                    T3 -. high match .-> M1
-                    
-                    T2 -. high match .-> M2
-                    T4 -. high match .-> M2
-                    
-                    T5 -. high match .-> M3
-                    T6 -. high match .-> M3
-                end
-                
-                F[Bidding System] --> G[Task Allocation]
-                
-                C --> F
-                D --> F
-                
-                G --> H1[Model A Tasks]
-                G --> H2[Model B Tasks] 
-                G --> H3[Model C Tasks]
-                
-                H1 --> I[Template Population]
-                H2 --> I
-                H3 --> I
-                
-                %% Apply styles
-                class O heading
-                class T1,T2,T3,T4,T5,T6 task
-                class M1,H1 modelA
-                class M2,H2 modelB
-                class M3,H3 modelC
-                class B,C,D,E,F,G system
-
-                %% Add click handlers
-                click O call clickBackToMain()
-        </div>
+        <!-- Research Pipeline -->
+        <g class="node" transform="translate(300, 120)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Research Pipeline</text>
+        </g>
         
-        <div class="mermaid hidden" id="knowledge-infrastructure">
-            flowchart TD
-                classDef heading fill:#ee6c4d,color:white,stroke-width:2px,font-weight:bold,padding:10px
-                classDef database fill:#023047,color:white,stroke-width:1px,font-weight:bold
-                classDef process fill:#219ebc,color:white,stroke-width:1px
-                classDef data fill:#8ecae6,color:#023047,stroke-width:1px
-                classDef system fill:#073B4C,color:white,stroke-width:1px,font-weight:bold
-                
-                A[Knowledge Infrastructure] --> B[Vector Database]
-                
-                subgraph VectorDB["Vector Database System"]
-                    B --> C[Document Chunking]
-                    C --> D[Embedding Generation]
-                    D --> E[Index Management]
-                    
-                    F[Research Documents] --> C
-                    G[Metadata Extraction] --> F
-                    H[Document Processing] --> F
-                end
-                
-                subgraph QuerSystem["Query System"]
-                    I[Query Interface]
-                    J[Semantic Search]
-                    K[Relevance Ranking]
-                    L[Context Window Assembly]
-                    
-                    I --> J
-                    J --> K
-                    K --> L
-                end
-                
-                E --> QuerSystem
-                
-                M[RAG Integration] --> I
-                
-                L --> N[LLM Context Provision]
-                
-                N --> O[Model Query Responses]
-                
-                %% Apply styles
-                class A heading
-                class B,E,I,J,K database
-                class C,D,G,H,M process
-                class F,L,N,O data
-
-                %% Add click handlers
-                click A call clickBackToMain()
-        </div>
+        <!-- LLM Orchestration Layer -->
+        <g class="node clickable" data-view="llm-view" transform="translate(300, 200)">
+          <rect class="clickable-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">LLM Orchestration Layer</text>
+        </g>
         
-        <div class="text-center mt-4">
-            <button id="back-button" class="hidden bg-blue-800 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition">
-                Return to Main View
-            </button>
-        </div>
+        <!-- Research Template -->
+        <g class="node" transform="translate(300, 270)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Research Template</text>
+        </g>
+        
+        <!-- Deep Research Model -->
+        <g class="node" transform="translate(300, 340)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Deep Research Model</text>
+        </g>
+        
+        <!-- Knowledge Infrastructure -->
+        <g class="node clickable" data-view="knowledge-view" transform="translate(300, 410)">
+          <rect class="clickable-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Knowledge Infrastructure</text>
+        </g>
+        
+        <!-- Augmented Research Composition -->
+        <g class="node" transform="translate(300, 480)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Augmented Research Composition</text>
+        </g>
+        
+        <!-- Final Research Output -->
+        <g class="node" transform="translate(300, 550)">
+          <rect class="output-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="dark-text">Final Research Output</text>
+        </g>
+        
+        <!-- Instructions -->
+        <g class="node" transform="translate(300, 600)">
+          <text class="dark-text">Click on orange components for details</text>
+        </g>
+        
+        <!-- Edges -->
+        <g class="links">
+          <!-- A to B -->
+          <line class="link" x1="300" y1="75" x2="300" y2="95"></line>
+          <polygon points="300,95 296,87 304,87" fill="#666"></polygon>
+          
+          <!-- B to C -->
+          <line class="link" x1="300" y1="145" x2="300" y2="175"></line>
+          <polygon points="300,175 296,167 304,167" fill="#666"></polygon>
+          
+          <!-- C to D -->
+          <line class="link" x1="300" y1="225" x2="300" y2="245"></line>
+          <polygon points="300,245 296,237 304,237" fill="#666"></polygon>
+          <text class="link-label" x="325" y="235">Populates</text>
+          
+          <!-- D to E -->
+          <line class="link" x1="300" y1="295" x2="300" y2="315"></line>
+          <polygon points="300,315 296,307 304,307" fill="#666"></polygon>
+          <text class="link-label" x="340" y="305">Processed by</text>
+          
+          <!-- E to F -->
+          <line class="link" x1="300" y1="365" x2="300" y2="385"></line>
+          <polygon points="300,385 296,377 304,377" fill="#666"></polygon>
+          <text class="link-label" x="330" y="375">Stored in</text>
+          
+          <!-- F to G -->
+          <line class="link" x1="300" y1="435" x2="300" y2="455"></line>
+          <polygon points="300,455 296,447 304,447" fill="#666"></polygon>
+          <text class="link-label" x="325" y="445">Enables</text>
+          
+          <!-- G to C (Feedback, dashed) -->
+          <path class="link" d="M 200,480 Q 150,340 200,200" stroke-dasharray="5,5"></path>
+          <polygon points="200,200 196,208 204,208" fill="#666"></polygon>
+          <text class="link-label" x="140" y="340">Feedback</text>
+          
+          <!-- G to H -->
+          <line class="link" x1="300" y1="505" x2="300" y2="525"></line>
+          <polygon points="300,525 296,517 304,517" fill="#666"></polygon>
+        </g>
+      </svg>
     </div>
-
-    <!-- JavaScript for Interactive Diagram -->
-    <script>
-        // Helper function for Mermaid click callbacks
-        function clickNode(id) {
-            console.log('Clicked node for', id);
-            // Using timeout to ensure the function completes before switching views
-            setTimeout(() => {
-                showDetail(id);
-            }, 10);
-            return false;
-        }
-
-        function clickBackToMain() {
-            console.log('Clicked to return to main view');
-            // Using timeout to ensure the function completes before switching views
-            setTimeout(() => {
-                showMain();
-            }, 10);
-            return false;
-        }
+    
+    <div id="llm-view" class="hidden">
+      <svg width="600" height="650" viewBox="0 0 600 650">
+        <!-- LLM Orchestration Layer Diagram -->
+        <g class="node" transform="translate(300, 50)">
+          <rect class="clickable-node" x="-150" y="-25" width="300" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">LLM Orchestration Layer</text>
+        </g>
         
-        // Initialize Mermaid with click callback support
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: 'neutral',
-            securityLevel: 'loose', // Required to allow click callbacks
-            fontFamily: 'Inter, sans-serif'
+        <g class="node" transform="translate(300, 130)">
+          <rect class="main-node" x="-150" y="-25" width="300" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Epistemic Task Decomposition</text>
+        </g>
+        
+        <g class="node" transform="translate(150, 210)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Task Profiles</text>
+        </g>
+        
+        <g class="node" transform="translate(450, 210)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Model Capability Profiles</text>
+        </g>
+        
+        <g class="node" transform="translate(300, 290)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Bidding System</text>
+        </g>
+        
+        <g class="node" transform="translate(300, 370)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Task Allocation</text>
+        </g>
+        
+        <g class="node" transform="translate(150, 450)">
+          <rect style="fill: #FFD166;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="dark-text">Model A Tasks</text>
+        </g>
+        
+        <g class="node" transform="translate(300, 450)">
+          <rect style="fill: #06D6A0;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Model B Tasks</text>
+        </g>
+        
+        <g class="node" transform="translate(450, 450)">
+          <rect style="fill: #118AB2;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Model C Tasks</text>
+        </g>
+        
+        <g class="node" transform="translate(300, 530)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Template Population</text>
+        </g>
+        
+        <!-- Return Button -->
+        <g class="node clickable" data-return="true" transform="translate(300, 600)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Return to Main View</text>
+        </g>
+        
+        <!-- Edges -->
+        <g class="links">
+          <line class="link" x1="300" y1="75" x2="300" y2="105"></line>
+          <polygon points="300,105 296,97 304,97" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="155" x2="200" y2="185"></line>
+          <polygon points="200,185 204,177 196,177" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="155" x2="400" y2="185"></line>
+          <polygon points="400,185 396,177 404,177" fill="#666"></polygon>
+          
+          <line class="link" x1="200" y1="235" x2="250" y2="265"></line>
+          <polygon points="250,265 246,257 254,257" fill="#666"></polygon>
+          
+          <line class="link" x1="400" y1="235" x2="350" y2="265"></line>
+          <polygon points="350,265 354,257 346,257" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="315" x2="300" y2="345"></line>
+          <polygon points="300,345 296,337 304,337" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="395" x2="200" y2="425"></line>
+          <polygon points="200,425 204,417 196,417" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="395" x2="300" y2="425"></line>
+          <polygon points="300,425 296,417 304,417" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="395" x2="400" y2="425"></line>
+          <polygon points="400,425 396,417 404,417" fill="#666"></polygon>
+          
+          <line class="link" x1="150" y1="475" x2="250" y2="505"></line>
+          <polygon points="250,505 246,497 254,497" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="475" x2="300" y2="505"></line>
+          <polygon points="300,505 296,497 304,497" fill="#666"></polygon>
+          
+          <line class="link" x1="450" y1="475" x2="350" y2="505"></line>
+          <polygon points="350,505 354,497 346,497" fill="#666"></polygon>
+        </g>
+      </svg>
+    </div>
+    
+    <div id="knowledge-view" class="hidden">
+      <svg width="600" height="650" viewBox="0 0 600 650">
+        <!-- Knowledge Infrastructure Diagram -->
+        <g class="node" transform="translate(300, 50)">
+          <rect class="clickable-node" x="-150" y="-25" width="300" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Knowledge Infrastructure</text>
+        </g>
+        
+        <g class="node" transform="translate(150, 130)">
+          <rect style="fill: #023047;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Vector Database System</text>
+        </g>
+        
+        <g class="node" transform="translate(450, 130)">
+          <rect style="fill: #023047;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Query System</text>
+        </g>
+        
+        <g class="node" transform="translate(300, 210)">
+          <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Document Processing</text>
+        </g>
+        
+        <g class="node" transform="translate(150, 290)">
+          <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Embedding Generation</text>
+        </g>
+        
+        <g class="node" transform="translate(450, 290)">
+          <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Semantic Search</text>
+        </g>
+        
+        <g class="node" transform="translate(300, 370)">
+          <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">RAG Integration</text>
+        </g>
+        
+        <g class="node" transform="translate(300, 450)">
+          <rect style="fill: #8ecae6;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="dark-text">LLM Context Provision</text>
+        </g>
+        
+        <g class="node" transform="translate(300, 530)">
+          <rect style="fill: #8ecae6;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="dark-text">Model Query Responses</text>
+        </g>
+        
+        <!-- Return Button -->
+        <g class="node clickable" data-return="true" transform="translate(300, 600)">
+          <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+          <text class="white-text">Return to Main View</text>
+        </g>
+        
+        <!-- Edges -->
+        <g class="links">
+          <line class="link" x1="300" y1="75" x2="200" y2="105"></line>
+          <polygon points="200,105 204,97 196,97" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="75" x2="400" y2="105"></line>
+          <polygon points="400,105 396,97 404,97" fill="#666"></polygon>
+          
+          <line class="link" x1="200" y1="155" x2="250" y2="185"></line>
+          <polygon points="250,185 246,177 254,177" fill="#666"></polygon>
+          
+          <line class="link" x1="400" y1="155" x2="350" y2="185"></line>
+          <polygon points="350,185 354,177 346,177" fill="#666"></polygon>
+          
+          <line class="link" x1="250" y1="235" x2="200" y2="265"></line>
+          <polygon points="200,265 204,257 196,257" fill="#666"></polygon>
+          
+          <line class="link" x1="350" y1="235" x2="400" y2="265"></line>
+          <polygon points="400,265 396,257 404,257" fill="#666"></polygon>
+          
+          <line class="link" x1="200" y1="315" x2="250" y2="345"></line>
+          <polygon points="250,345 246,337 254,337" fill="#666"></polygon>
+          
+          <line class="link" x1="400" y1="315" x2="350" y2="345"></line>
+          <polygon points="350,345 354,337 346,337" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="395" x2="300" y2="425"></line>
+          <polygon points="300,425 296,417 304,417" fill="#666"></polygon>
+          
+          <line class="link" x1="300" y1="475" x2="300" y2="505"></line>
+          <polygon points="300,505 296,497 304,497" fill="#666"></polygon>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    // Simple vanilla JavaScript to handle view switching
+    document.addEventListener('DOMContentLoaded', function() {
+      const mainView = document.getElementById('main-view');
+      const llmView = document.getElementById('llm-view');
+      const knowledgeView = document.getElementById('knowledge-view');
+      const backBtn = document.getElementById('back-btn');
+      
+      // Clickable nodes in the main view
+      const clickableNodes = document.querySelectorAll('.node.clickable');
+      
+      clickableNodes.forEach(node => {
+        node.addEventListener('click', function() {
+          const viewToShow = this.getAttribute('data-view');
+          const shouldReturn = this.getAttribute('data-return');
+          
+          if (shouldReturn) {
+            // Return to main view
+            mainView.classList.remove('hidden');
+            llmView.classList.add('hidden');
+            knowledgeView.classList.add('hidden');
+            backBtn.style.display = 'none';
+          } else if (viewToShow) {
+            // Show specific view
+            mainView.classList.add('hidden');
+            llmView.classList.add('hidden');
+            knowledgeView.classList.add('hidden');
+            document.getElementById(viewToShow).classList.remove('hidden');
+            backBtn.style.display = 'block';
+            
+            // Send message to parent page to scroll to the corresponding section
+            sendMessageToParent(viewToShow);
+          }
         });
+      });
+      
+      // Back button functionality
+      backBtn.addEventListener('click', function() {
+        mainView.classList.remove('hidden');
+        llmView.classList.add('hidden');
+        knowledgeView.classList.add('hidden');
+        backBtn.style.display = 'none';
         
-        // Track loaded state
-        let mermaidLoaded = false;
+        // Send message to parent to scroll back to the main diagram section
+        sendMessageToParent('main');
+      });
+      
+      // Function to send messages to the parent page
+      function sendMessageToParent(componentId) {
+        // Map view IDs to component names that match the markdown headings
+        const componentMap = {
+          'llm-view': '3-multi-llm-orchestration-to-implement',
+          'knowledge-view': '2-vector-database-integration-to-implement',
+          'main': 'interactive-diagram'
+        };
         
-        // Ensure Mermaid diagrams are properly loaded
-        function initMermaid() {
-            if (mermaidLoaded) return;
-            
-            try {
-                mermaid.init(undefined, document.querySelectorAll('.mermaid'));
-                mermaidLoaded = true;
-                console.log('Mermaid initialized');
-            } catch (e) {
-                console.error('Mermaid init error:', e);
-                // Try again in 500ms
-                setTimeout(initMermaid, 500);
-            }
-        }
+        // Get the mapped component name or use the original if not found
+        const mappedComponent = componentMap[componentId] || componentId;
         
-        // Variables for diagram control
-        let mainPipeline;
-        let llmOrchestration;
-        let knowledgeInfrastructure;
-        let backButton;
+        // Log the message being sent (for debugging)
+        console.log('Sending message to parent:', mappedComponent);
         
-        // Show detail view function
-        function showDetail(id) {
-            console.log('Showing detail:', id);
-            
-            // Hide main view
-            mainPipeline.classList.add('hidden');
-            
-            // Hide all detail views
-            llmOrchestration.classList.add('hidden');
-            knowledgeInfrastructure.classList.add('hidden');
-            
-            // Show selected detail view
-            document.getElementById(id)?.classList.remove('hidden');
-            
-            // Show back button
-            backButton.classList.remove('hidden');
-        }
-        
-        function showMain() {
-            console.log('Showing main view');
-            
-            // Hide all detail views
-            llmOrchestration.classList.add('hidden');
-            knowledgeInfrastructure.classList.add('hidden');
-            
-            // Show main view
-            mainPipeline.classList.remove('hidden');
-            
-            // Hide back button
-            backButton.classList.add('hidden');
-        }
-
-        // Initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing...');
-            
-            // Initialize Mermaid
-            initMermaid();
-            
-            // Get diagram elements
-            mainPipeline = document.getElementById('main-pipeline');
-            llmOrchestration = document.getElementById('llm-orchestration');
-            knowledgeInfrastructure = document.getElementById('knowledge-infrastructure');
-            backButton = document.getElementById('back-button');
-            
-            // Add click event for back button
-            backButton.addEventListener('click', showMain);
-        });
-
-        // Fallback initialization if DOMContentLoaded already fired
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            console.log('DOM already loaded, initializing immediately...');
-            setTimeout(() => {
-                // Initialize Mermaid
-                initMermaid();
-                
-                // Get diagram elements
-                mainPipeline = document.getElementById('main-pipeline');
-                llmOrchestration = document.getElementById('llm-orchestration');
-                knowledgeInfrastructure = document.getElementById('knowledge-infrastructure');
-                backButton = document.getElementById('back-button');
-                
-                // Add click event for back button
-                backButton.addEventListener('click', showMain);
-            }, 100);
-        }
-    </script>
+        // Send the message to the parent window
+        window.parent.postMessage({
+          type: 'componentClick',
+          componentId: mappedComponent
+        }, '*');
+      }
+      
+      // Notify parent that diagram is loaded
+      window.parent.postMessage({
+        type: 'diagramLoaded'
+      }, '*');
+    });
+  </script>
 </body>
 </html>
