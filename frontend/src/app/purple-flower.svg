@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Flower petals -->
+  <path d="M16,4 C18,8 22,10 26,10 C22,12 20,16 20,20 C16,18 12,20 10,24 C8,20 4,18 0,18 C4,16 6,12 6,8 C10,10 14,8 16,4 Z" fill="#8A2BE2" />
+  <!-- Flower center -->
+  <circle cx="16" cy="16" r="4" fill="#FFD700" />
+</svg>

@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('component-descriptions');
     if (container && container.querySelector('h1, h2, h3, h4')) {
       componentsLoaded = true;
+      console.log('Components loaded successfully');
       
       // If there's a pending scroll target, scroll to it now
       if (pendingScrollTarget) {
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function scrollToSection(sectionId) {
     // If components aren't loaded yet, save the target and wait
     if (!componentsLoaded) {
+      console.log('Components not loaded yet, setting pending scroll target:', sectionId);
       pendingScrollTarget = sectionId;
       return;
     }
@@ -37,6 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const sectionElement = document.getElementById(sectionId);
     
     if (sectionElement) {
+      console.log('Scrolling to section:', sectionId);
+      
       // Scroll to the section
       sectionElement.scrollIntoView({ behavior: 'smooth' });
       
@@ -47,6 +51,44 @@ document.addEventListener('DOMContentLoaded', function() {
       }, 2000);
     } else {
       console.warn('Section not found:', sectionId);
+      
+      // Try to find a similar section by partial match
+      const allHeadings = document.querySelectorAll('#component-descriptions h1, #component-descriptions h2, #component-descriptions h3, #component-descriptions h4');
+      let bestMatch = null;
+      let bestMatchScore = 0;
+      
+      // Convert sectionId to a more searchable format
+      const searchTerm = sectionId.toLowerCase().replace(/-/g, ' ');
+      
+      allHeadings.forEach(heading => {
+        const headingText = heading.textContent.toLowerCase();
+        const headingId = heading.id.toLowerCase();
+        
+        // Check if the heading text contains any part of the search term
+        if (headingText.includes(searchTerm) || searchTerm.includes(headingText) ||
+            headingId.includes(searchTerm) || searchTerm.includes(headingId)) {
+          const score = Math.max(
+            headingText.includes(searchTerm) ? searchTerm.length / headingText.length : 0,
+            searchTerm.includes(headingText) ? headingText.length / searchTerm.length : 0,
+            headingId.includes(searchTerm) ? searchTerm.length / headingId.length : 0,
+            searchTerm.includes(headingId) ? headingId.length / searchTerm.length : 0
+          );
+          
+          if (score > bestMatchScore) {
+            bestMatchScore = score;
+            bestMatch = heading;
+          }
+        }
+      });
+      
+      if (bestMatch && bestMatchScore > 0.3) {
+        console.log('Found best match for', sectionId, ':', bestMatch.id, 'with score', bestMatchScore);
+        bestMatch.scrollIntoView({ behavior: 'smooth' });
+        bestMatch.classList.add('highlight-section');
+        setTimeout(function() {
+          bestMatch.classList.remove('highlight-section');
+        }, 2000);
+      }
     }
   }
   
@@ -63,6 +105,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const sectionMap = {
           '3-multi-llm-orchestration-to-implement': '3-multi-llm-orchestration-to-implement',
           '2-vector-database-integration-to-implement': '2-vector-database-integration-to-implement',
+          '1-input-processing-implemented': '1-input-processing-implemented',
+          '4-research-generation-to-implement': '4-research-generation-to-implement',
+          '5-content-assembly-to-implement': '5-content-assembly-to-implement',
+          'research-problem': 'research-problem',
+          'research-pipeline': 'research-pipeline',
+          'research-template': 'research-template',
+          'deep-research-model': 'deep-research-model',
+          'augmented-research-composition': 'augmented-research-composition',
+          'final-research-output': 'final-research-output',
           'interactive-diagram': 'interactive-diagram'
         };
         

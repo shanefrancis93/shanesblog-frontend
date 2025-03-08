@@ -18,8 +18,11 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: "Shane's Blog",
+  title: "Simulacra",
   description: 'AI Development, Systems Design, and Technical Writing',
+  icons: {
+    icon: './icon.svg',
+  },
 }
 
 export default function RootLayout({

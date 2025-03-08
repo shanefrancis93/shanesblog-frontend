@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Epistemic Task Assignment Pipeline | Shane's Blog</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Updated to the latest 9.4.3 version with specific integrity hash -->
@@ -87,14 +87,60 @@
             -webkit-backdrop-filter: blur(8px);
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, var(--shadow-strength));
-            padding: 2rem;
-            margin-bottom: 2rem;
-            min-height: 500px;
-            height: auto;
+            padding: 0.5rem;
+            margin: 0;
             width: 100%;
+            height: calc(100vh - 4rem);
             position: relative;
             z-index: 1;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .graph-container {
+                padding: 0;
+                height: calc(100vh - 2rem);
+                margin: 0;
+                border-radius: 0;
+            }
+
+            iframe {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .graph-container {
+                padding: 0.25rem;
+                margin: 0.25rem;
+                width: calc(100% - 0.5rem);
+            }
+
+            iframe {
+                min-height: 80vh;
+            }
+
+            /* Further optimize for smaller screens */
+            header {
+                padding: 0.25rem;
+            }
+
+            .breadcrumb {
+                font-size: 0.9rem;
+                padding: 0.25rem;
+            }
         }
         
         .dark .graph-container {
@@ -230,6 +276,223 @@
         .highlight-section {
             animation: highlight-pulse 2s ease-in-out;
         }
+        
+        .component-toc {
+            border-left: 4px solid var(--color-theme-light-primary);
+        }
+        
+        .dark .component-toc {
+            border-left: 4px solid var(--color-theme-dark-primary);
+        }
+        
+        @keyframes highlight-pulse {
+            0% { background-color: rgba(93, 76, 122, 0); }
+            25% { background-color: rgba(93, 76, 122, 0.2); }
+            75% { background-color: rgba(93, 76, 122, 0.2); }
+            100% { background-color: rgba(93, 76, 122, 0); }
+        }
+        
+        .dark {
+            --highlight-color-start: rgba(226, 232, 240, 0);
+            --highlight-color-mid: rgba(226, 232, 240, 0.1);
+        }
+        
+        @keyframes highlight-pulse-dark {
+            0% { background-color: var(--highlight-color-start); }
+            25% { background-color: var(--highlight-color-mid); }
+            75% { background-color: var(--highlight-color-mid); }
+            100% { background-color: var(--highlight-color-start); }
+        }
+        
+        .dark .highlight-section {
+            animation: highlight-pulse-dark 2s ease-in-out;
+        }
+        
+        /* Iframe container styling */
+        .iframe-container {
+            background-color: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, var(--shadow-strength));
+            padding: 1rem;
+            margin: 1rem 0;
+            width: 100%;
+            height: 100vh;
+            max-height: 800px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .iframe-container {
+                height: 140vh;
+                max-height: none;
+                padding: 0.5rem;
+                margin: 0.5rem 0;
+            }
+        }
+        
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transform-origin: 0 0;
+        }
+        
+        @media (max-width: 768px) {
+            .iframe-container iframe {
+                transform: scale(0.9);
+                width: 111.11%;  /* 100/0.9 to maintain aspect ratio */
+                height: 111.11%;
+            }
+        }
+        
+        /* Base Styles */
+        :root {
+            --color-node-implemented: #d1fae5;
+            --color-node-planned: #e0e7ff;
+            --color-node-stroke-implemented: #10b981;
+            --color-node-stroke-planned: #6366f1;
+            --color-edge: #94a3b8;
+            --color-highlight: #fef3c7;
+        }
+        
+        .dark {
+            --color-node-implemented: rgba(16, 185, 129, 0.2);
+            --color-node-planned: rgba(99, 102, 241, 0.2);
+            --color-node-stroke-implemented: #10b981;
+            --color-node-stroke-planned: #6366f1;
+            --color-edge: #64748b;
+            --color-highlight: rgba(254, 243, 199, 0.2);
+        }
+        
+        /* Component Styles */
+        .component-section {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .component-section.highlight {
+            background-color: var(--color-highlight);
+        }
+        
+        /* Table of Contents */
+        .toc {
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .toc {
+            background-color: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .toc-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .toc-list li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc-list a {
+            color: var(--color-node-stroke-planned);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .toc-list a:hover {
+            color: var(--color-node-stroke-implemented);
+            text-decoration: underline;
+        }
+        
+        /* Iframe Container */
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .iframe-container {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #diagram-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+    <style>
+        /* Collapsible section styles */
+        .section, .subsection {
+          transition: all 0.3s ease-in-out;
+        }
+        
+        .collapsible-header {
+          cursor: pointer;
+          border: 1px solid rgba(156, 163, 175, 0.2);
+        }
+        
+        .collapsible-header:hover {
+          border-color: rgba(156, 163, 175, 0.4);
+        }
+        
+        .collapsible-header span {
+          display: inline-block;
+          transition: transform 0.2s ease-in-out;
+        }
+        
+        .collapsible-content {
+          overflow: hidden;
+          transition: all 0.3s ease-in-out;
+        }
+        
+        .highlight-section {
+          animation: highlight 2s ease-in-out;
+        }
+        
+        @keyframes highlight {
+          0% { background-color: rgba(59, 130, 246, 0.1); }
+          50% { background-color: rgba(59, 130, 246, 0.1); }
+          100% { background-color: transparent; }
+        }
+        
+        /* Component TOC styles */
+        .component-toc {
+          border: 1px solid rgba(156, 163, 175, 0.2);
+        }
+        
+        .component-toc ul {
+          list-style: none;
+          padding-left: 0;
+        }
+        
+        .component-toc a {
+          display: block;
+          padding: 0.25rem 0;
+          transition: all 0.2s ease-in-out;
+        }
+        
+        .component-toc a:hover {
+          padding-left: 0.5rem;
+        }
     </style>
 </head>
 <body class="min-h-screen transition-all duration-200">
@@ -334,51 +597,9 @@
                 
                 <!-- Main Pipeline View -->
                 <div id="main-pipeline">
-                    <svg width="100%" height="500" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Pipeline Components -->
-                        <!-- Input Processing (Implemented) -->
-                        <g id="input-processing" class="node clickable" onclick="window.callback('input-processing')">
-                            <rect x="50" y="100" width="150" height="60" rx="5" fill="var(--color-node-implemented)" stroke="var(--color-node-stroke-implemented)" stroke-width="2"></rect>
-                            <text x="125" y="140" text-anchor="middle" fill="var(--color-node-stroke-implemented)" font-weight="bold">Input Processing</text>
-                        </g>
-                        
-                        <!-- Vector Database (Planned) -->
-                        <g id="knowledge-infrastructure" class="node clickable" onclick="window.callback('knowledge-infrastructure')">
-                            <rect x="300" y="100" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
-                            <text x="375" y="140" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Vector Database</text>
-                        </g>
-                        
-                        <!-- LLM Orchestration (Planned) -->
-                        <g id="llm-orchestration" class="node clickable" onclick="window.callback('llm-orchestration')">
-                            <rect x="550" y="100" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
-                            <text x="625" y="140" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">LLM Orchestration</text>
-                        </g>
-                        
-                        <!-- Research Generation (Planned) -->
-                        <g id="research-generation" class="node clickable" onclick="window.callback('research-generation')">
-                            <rect x="300" y="220" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
-                            <text x="375" y="260" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Research Generation</text>
-                        </g>
-                        
-                        <!-- Content Assembly (Planned) -->
-                        <g id="content-assembly" class="node clickable" onclick="window.callback('content-assembly')">
-                            <rect x="550" y="220" width="150" height="60" rx="5" fill="var(--color-node-planned)" stroke="var(--color-node-stroke-planned)" stroke-width="2"></rect>
-                            <text x="625" y="260" text-anchor="middle" fill="var(--color-node-stroke-planned)" font-weight="bold">Content Assembly</text>
-                        </g>
-                        
-                        <!-- Connection Arrows -->
-                        <path d="M200 130 L300 130" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead)"></path>
-                        <path d="M450 130 L550 130" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead)"></path>
-                        <path d="M625 160 L625 220" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead)"></path>
-                        <path d="M450 250 L550 250" stroke="var(--color-edge)" stroke-width="2" marker-end="url(#arrowhead)"></path>
-                        
-                        <!-- Arrow marker definition -->
-                        <defs>
-                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                                <polygon points="0 0, 10 3.5, 0 7" fill="var(--color-edge)"></polygon>
-                            </marker>
-                        </defs>
-                    </svg>
+                    <div class="iframe-container">
+                        <iframe src="diagram.html" id="diagram-iframe" title="Research Pipeline Diagram"></iframe>
+                    </div>
                 </div>
                 
                 <!-- Detail views rendered as static SVGs - hide them initially -->
@@ -601,5 +822,6 @@
 
     <script src="pipeline-interaction.js"></script>
     <script src="component-loader.js"></script>
+    <script src="diagram-listener.js"></script>
 </body>
 </html>

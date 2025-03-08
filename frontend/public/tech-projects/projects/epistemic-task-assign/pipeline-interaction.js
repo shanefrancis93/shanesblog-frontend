@@ -7,34 +7,36 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded, initializing pipeline interaction');
     try {
         console.log('Pipeline interaction script initialized');
-        // Define the callback function for SVG node clicks
-        window.callback = function (nodeId) {
-            console.log('Node clicked:', nodeId);
-            showDetailView(nodeId);
-        };
+        
         // Initialize theme based on time of day
         initializeTheme();
+        
         // Set up event handlers
         setupEventHandlers();
+        
         // Setup theme toggle
         setupThemeToggle();
     }
     catch (error) {
         console.error('Error initializing pipeline interaction:', error);
     }
+    
     // Function to initialize theme based on time of day, matching the main site's approach
     function initializeTheme() {
         const isNightTime = () => {
             const hour = new Date().getHours();
             return hour < 6 || hour >= 18; // Before 6am or after 6pm = dark mode
         };
+        
         // Apply theme based on time
         const shouldBeDark = isNightTime();
         document.documentElement.classList.toggle('dark', shouldBeDark);
         console.log(`Time-based theme initialized: ${shouldBeDark ? 'dark' : 'light'} mode`);
+        
         // Update theme toggle button appearance
         updateThemeToggleButton();
     }
+    
     // Function to set up the theme toggle
     function setupThemeToggle() {
         const themeToggleButton = document.getElementById('theme-toggle-button');
@@ -42,8 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Theme toggle button not found');
             return;
         }
+        
         // Add theme toggle button icons
         updateThemeToggleButton();
+        
         // Add click event listener for theme toggle
         themeToggleButton.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
@@ -51,155 +55,125 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Theme toggled to:', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
         });
     }
+    
     // Function to update theme toggle button appearance
     function updateThemeToggleButton() {
         const themeToggleButton = document.getElementById('theme-toggle-button');
         if (!themeToggleButton)
             return;
+        
         const isDark = document.documentElement.classList.contains('dark');
+        
         // Set the appropriate icon based on the current theme
         themeToggleButton.innerHTML = isDark
-            ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" /></svg>'
-            : '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg>';
+            ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-yellow-300"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" /></svg>'
+            : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-gray-700"><path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd" /></svg>';
     }
+    
     // Function to show a specific detail view
     function showDetailView(componentId) {
-        console.log('Showing detail view:', componentId);
+        console.log('Showing detail view for:', componentId);
+        
         // Hide the main pipeline view
         const mainPipeline = document.getElementById('main-pipeline');
-        mainPipeline === null || mainPipeline === void 0 ? void 0 : mainPipeline.classList.add('hidden');
-        // Hide all detail views first
-        const views = [
-            document.getElementById('input-processing-detail'),
-            document.getElementById('knowledge-infrastructure-detail'),
-            document.getElementById('llm-orchestration-detail'),
-            document.getElementById('research-generation-detail'),
-            document.getElementById('content-assembly-detail')
-        ];
-        views.forEach(view => {
-            if (view)
-                view.classList.add('hidden');
-        });
-        // Show the requested detail view
+        if (mainPipeline) {
+            mainPipeline.style.display = 'none';
+        }
+        
+        // Show the detail view
         const detailView = document.getElementById(`${componentId}-detail`);
         if (detailView) {
-            detailView.classList.remove('hidden');
-            // Show the back button
-            const backButton = document.getElementById('back-button');
-            if (backButton)
-                backButton.classList.remove('hidden');
-            // Update component info
-            updateComponentInfo(componentId);
+            detailView.style.display = 'block';
+        } else {
+            console.warn(`Detail view not found for component: ${componentId}`);
         }
-        else {
-            console.error('Detail view not found:', `${componentId}-detail`);
+        
+        // Show the back button
+        const backButton = document.getElementById('back-button');
+        if (backButton) {
+            backButton.style.display = 'block';
         }
+        
+        // Update component information
+        updateComponentInfo(componentId);
     }
+    
     // Function to show the main view
     function showMainView() {
-        console.log('Showing main view');
-        // Hide all detail views
-        const views = [
-            document.getElementById('input-processing-detail'),
-            document.getElementById('knowledge-infrastructure-detail'),
-            document.getElementById('llm-orchestration-detail'),
-            document.getElementById('research-generation-detail'),
-            document.getElementById('content-assembly-detail')
-        ];
-        views.forEach(view => {
-            if (view)
-                view.classList.add('hidden');
-        });
+        console.log('Showing main pipeline view');
+        
         // Show the main pipeline view
         const mainPipeline = document.getElementById('main-pipeline');
-        if (mainPipeline)
-            mainPipeline.classList.remove('hidden');
+        if (mainPipeline) {
+            mainPipeline.style.display = 'block';
+        }
+        
+        // Hide all detail views
+        const detailViews = document.querySelectorAll('[id$="-detail"]');
+        detailViews.forEach(view => {
+            view.style.display = 'none';
+        });
+        
         // Hide the back button
         const backButton = document.getElementById('back-button');
-        if (backButton)
-            backButton.classList.add('hidden');
-        // Reset component info
+        if (backButton) {
+            backButton.style.display = 'none';
+        }
+        
+        // Reset component information
         resetComponentInfo();
     }
+    
     // Function to update component information
     function updateComponentInfo(componentId) {
         console.log('Updating component info for:', componentId);
-        const componentTitle = document.getElementById('component-title');
-        const componentStatus = document.getElementById('component-status');
-        const componentDescription = document.getElementById('component-description');
-        if (!componentTitle || !componentStatus || !componentDescription) {
-            console.error('Component info elements not found');
-            return;
-        }
-        let title = '';
-        let status = '';
-        let description = '';
-        switch (componentId) {
-            case 'input-processing':
-                title = 'Input Processing';
-                status = 'Implemented';
-                description = 'Extracts and structures user messages from transcripts, preserving temporal context and formatting as markdown.';
-                break;
-            case 'knowledge-infrastructure':
-                title = 'Vector Database';
-                status = 'Planned';
-                description = 'Stores and retrieves knowledge using Chroma DB with text-embedding-ada-002 embeddings for both user messages and research outputs.';
-                break;
-            case 'llm-orchestration':
-                title = 'LLM Orchestration';
-                status = 'Planned';
-                description = 'Coordinates multiple AI models (Claude, GPT-4, Gemini) with a structured prompting system for optimal task routing.';
-                break;
-            case 'research-generation':
-                title = 'Research Generation';
-                status = 'Planned';
-                description = 'Creates in-depth research content with sectioned output in markdown/JSON format and automatic chunking for embedding.';
-                break;
-            case 'content-assembly':
-                title = 'Content Assembly';
-                status = 'Planned';
-                description = 'Generates the final blog post with section collapsing, formatting, and citation/reference management.';
-                break;
-            default:
-                console.error('Unknown component ID:', componentId);
-                return;
-        }
-        componentTitle.textContent = title;
-        componentStatus.textContent = status;
-        componentDescription.textContent = description;
-        // Update status based on theme-compatible classes
-        componentStatus.className = 'px-2 py-1 rounded text-sm font-semibold';
-        if (status === 'Implemented') {
-            componentStatus.classList.add('implemented-label');
-        }
-        else {
-            componentStatus.classList.add('planned-label');
+        
+        // Scroll to the component description
+        const iframe = document.getElementById('diagram-iframe');
+        if (iframe && iframe.contentWindow) {
+            // Send a message to the iframe to highlight the component
+            iframe.contentWindow.postMessage({
+                type: 'highlightComponent',
+                componentId: componentId
+            }, '*');
         }
     }
+    
     // Function to reset component information
     function resetComponentInfo() {
         console.log('Resetting component info');
-        const componentTitle = document.getElementById('component-title');
-        const componentStatus = document.getElementById('component-status');
-        const componentDescription = document.getElementById('component-description');
-        if (componentTitle)
-            componentTitle.textContent = 'Pipeline Overview';
-        if (componentStatus) {
-            componentStatus.textContent = 'Interactive';
-            componentStatus.className = 'px-2 py-1 rounded text-sm font-semibold text-gray-800 bg-gray-100 dark:text-gray-200 dark:bg-gray-700';
+        
+        // Clear any highlights or selections
+        const iframe = document.getElementById('diagram-iframe');
+        if (iframe && iframe.contentWindow) {
+            // Send a message to the iframe to reset highlights
+            iframe.contentWindow.postMessage({
+                type: 'resetHighlights'
+            }, '*');
         }
-        if (componentDescription)
-            componentDescription.textContent = 'Click on any component in the diagram to see more details.';
     }
+    
     // Function to setup event handlers
     function setupEventHandlers() {
-        // Set up back button functionality
+        console.log('Setting up event handlers');
+        
+        // Add click event listener for back button
         const backButton = document.getElementById('back-button');
         if (backButton) {
-            backButton.addEventListener('click', function () {
-                showMainView();
-            });
+            backButton.addEventListener('click', showMainView);
         }
-        // Add more event handlers as needed
+        
+        // Listen for messages from the iframe
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'componentClick') {
+                const componentId = event.data.componentId;
+                console.log('Received component click from iframe:', componentId);
+                
+                // If it's a view ID, show the detail view
+                if (componentId.endsWith('-view')) {
+                    showDetailView(componentId.replace('-view', ''));
+                }
+            }
+        });
     }
 });
