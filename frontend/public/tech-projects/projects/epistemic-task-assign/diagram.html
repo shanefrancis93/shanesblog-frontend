@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Pipeline Diagram</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        #back-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            background: #023047;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+            z-index: 100;
+        }
+
+        .expandable-text-container {
+            position: absolute;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+        }
+
+        .expandable-text-container.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .expandable-text {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+            pointer-events: auto;
+        }
+
+        .expandable-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .expandable-text-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            color: #023047;
+        }
+
+        .expandable-text p {
+            margin: 0 0 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .expandable-text ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .expandable-text li {
+            font-size: 0.875rem;
+            line-height: 1.4;
+            margin: 0.25rem 0;
+        }
+
+        .node {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .node:hover {
+            opacity: 0.8;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            svg {
+                height: auto;
+                width: 100%;
+                max-height: 80vh;
+            }
+
+            .expandable-text {
+                max-width: calc(100vw - 40px);
+                font-size: 0.875rem;
+                padding: 0.75rem;
+                position: fixed;
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                border-radius: 8px;
+                z-index: 1000;
+            }
+
+            .expandable-text-header {
+                font-size: 1.1rem;
+                margin-bottom: 0.75rem;
+                padding-bottom: 0.4rem;
+            }
+
+            text, .white-text, .dark-text {
+                font-size: 12px;
+            }
+
+            .node rect {
+                stroke-width: 2px;
+            }
+
+            #back-btn {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+                background: rgba(2, 48, 71, 0.9);
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) {
+            .node {
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .node:active {
+                opacity: 0.7;
+            }
+
+            .expandable-text {
+                touch-action: pan-x pan-y;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #back-btn:active {
+                transform: scale(0.98);
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        p.instruction {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        svg {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+
+        .node rect {
+            stroke: #333;
+            stroke-width: 1.5px;
+        }
+
+        .node text {
+            font-size: 14px;
+            font-weight: bold;
+            text-anchor: middle;
+            alignment-baseline: middle;
+        }
+
+        .link {
+            fill: none;
+            stroke: #666;
+            stroke-width: 1.5px;
+        }
+
+        .link-label {
+            font-size: 12px;
+            fill: #666;
+            text-anchor: middle;
+        }
+
+        .main-node {
+            fill: #3d5a80;
+        }
+
+        .clickable-node {
+            fill: #ee6c4d;
+            cursor: pointer;
+        }
+
+        .output-node {
+            fill: #98c1d9;
+        }
+
+        .white-text {
+            fill: white;
+        }
+
+        .dark-text {
+            fill: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Research Pipeline</h1>
+        <p class="instruction">Click on orange components to see detailed views</p>
+
+        <button id="back-btn">Back to Main View</button>
+
+        <div id="main-view">
+            <svg width="600" height="650" viewBox="0 0 600 650">
+                <!-- Main Diagram -->
+                <!-- Research Problem -->
+                <g class="node" transform="translate(300, 50)" id="research-problem">
+                    <rect class="output-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="dark-text">Research Problem</text>
+                </g>
+
+                <!-- Research Pipeline -->
+                <g class="node" transform="translate(300, 130)" id="research-pipeline">
+                    <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Research Pipeline</text>
+                </g>
+
+                <!-- LLM Orchestration Layer -->
+                <g class="node clickable" data-view="llm-view" transform="translate(300, 200)" id="llm-orchestration">
+                    <rect class="clickable-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">LLM Orchestration Layer</text>
+                </g>
+
+                <!-- Research Template -->
+                <g class="node" transform="translate(300, 270)" id="research-template">
+                    <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Research Template</text>
+                </g>
+
+                <!-- Deep Research Model -->
+                <g class="node" transform="translate(300, 340)" id="deep-research-model">
+                    <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Deep Research Model</text>
+                </g>
+
+                <!-- Knowledge Infrastructure -->
+                <g class="node clickable" data-view="knowledge-view" transform="translate(300, 410)" id="knowledge-infrastructure">
+                    <rect class="clickable-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Knowledge Infrastructure</text>
+                </g>
+
+                <!-- Augmented Research Composition -->
+                <g class="node" transform="translate(300, 480)" id="augmented-research-composition">
+                    <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Augmented Research Composition</text>
+                </g>
+
+                <!-- Final Research Output -->
+                <g class="node" transform="translate(300, 550)" id="final-research-output">
+                    <rect class="output-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="dark-text">Final Research Output</text>
+                </g>
+
+                <!-- Edges -->
+                <g class="links">
+                    <line class="link" x1="300" y1="75" x2="300" y2="105"></line>
+                    <polygon points="300,105 296,97 304,97" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="155" x2="300" y2="175"></line>
+                    <polygon points="300,175 296,167 304,167" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="225" x2="300" y2="245"></line>
+                    <polygon points="300,245 296,237 304,237" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="295" x2="300" y2="315"></line>
+                    <polygon points="300,315 296,307 304,307" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="365" x2="300" y2="385"></line>
+                    <polygon points="300,385 296,377 304,377" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="435" x2="300" y2="455"></line>
+                    <polygon points="300,455 296,447 304,447" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="505" x2="300" y2="525"></line>
+                    <polygon points="300,525 296,517 304,517" fill="#666"></polygon>
+                </g>
+            </svg>
+            <div id="floating-text-container-main-view" class="expandable-text-container"></div>
+        </div>
+
+        <div id="llm-view" class="hidden">
+            <svg width="600" height="650" viewBox="0 0 600 650">
+                <!-- LLM Orchestration Layer Diagram -->
+                <g class="node" transform="translate(300, 50)" id="llm-orchestration">
+                    <rect class="clickable-node" x="-150" y="-25" width="300" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">LLM Orchestration Layer</text>
+                </g>
+
+                <g class="node" transform="translate(300, 130)" id="epistemic-task-decomposition">
+                    <rect style="fill: #023047;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Epistemic Task Decomposition</text>
+                </g>
+
+                <g class="node" transform="translate(150, 210)" id="task-profiles">
+                    <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Task Profiles</text>
+                </g>
+
+                <g class="node" transform="translate(450, 210)" id="model-capability-profiles">
+                    <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Model Capability Profiles</text>
+                </g>
+
+                <g class="node" transform="translate(300, 290)" id="bidding-system">
+                    <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Bidding System</text>
+                </g>
+
+                <g class="node" transform="translate(300, 370)" id="task-allocation">
+                    <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Task Allocation</text>
+                </g>
+
+                <g class="node" transform="translate(150, 450)" id="model-a-tasks">
+                    <rect style="fill: #8ecae6;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="dark-text">Model A Tasks</text>
+                </g>
+
+                <g class="node" transform="translate(300, 450)" id="model-b-tasks">
+                    <rect style="fill: #8ecae6;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="dark-text">Model B Tasks</text>
+                </g>
+
+                <g class="node" transform="translate(450, 450)" id="model-c-tasks">
+                    <rect style="fill: #8ecae6;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="dark-text">Model C Tasks</text>
+                </g>
+
+                <g class="node" transform="translate(300, 530)" id="template-population">
+                    <rect style="fill: #8ecae6;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="dark-text">Template Population</text>
+                </g>
+
+                <!-- Return Button -->
+                <g class="node clickable" data-return="true" transform="translate(300, 600)">
+                    <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Return to Main View</text>
+                </g>
+
+                <!-- Edges -->
+                <g class="links">
+                    <line class="link" x1="300" y1="75" x2="300" y2="105"></line>
+                    <polygon points="300,105 296,97 304,97" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="155" x2="200" y2="185"></line>
+                    <polygon points="200,185 204,177 196,177" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="155" x2="400" y2="185"></line>
+                    <polygon points="400,185 396,177 404,177" fill="#666"></polygon>
+
+                    <line class="link" x1="200" y1="235" x2="250" y2="265"></line>
+                    <polygon points="250,265 246,257 254,257" fill="#666"></polygon>
+
+                    <line class="link" x1="400" y1="235" x2="350" y2="265"></line>
+                    <polygon points="350,265 354,257 346,257" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="315" x2="300" y2="345"></line>
+                    <polygon points="300,345 296,337 304,337" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="395" x2="200" y2="425"></line>
+                    <polygon points="200,425 204,417 196,417" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="395" x2="300" y2="425"></line>
+                    <polygon points="300,425 296,417 304,417" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="395" x2="400" y2="425"></line>
+                    <polygon points="400,425 396,417 404,417" fill="#666"></polygon>
+
+                    <line class="link" x1="150" y1="475" x2="250" y2="505"></line>
+                    <polygon points="250,505 246,497 254,497" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="475" x2="300" y2="505"></line>
+                    <polygon points="300,505 296,497 304,497" fill="#666"></polygon>
+
+                    <line class="link" x1="450" y1="475" x2="350" y2="505"></line>
+                    <polygon points="350,505 354,497 346,497" fill="#666"></polygon>
+                </g>
+            </svg>
+            <div id="floating-text-container-llm-view" class="expandable-text-container"></div>
+        </div>
+
+        <div id="knowledge-view" class="hidden">
+            <!-- Container for expandable text that will be positioned above SVG -->
+            <div id="floating-text-container-knowledge-view" class="expandable-text-container"></div>
+
+            <svg width="600" height="650" viewBox="0 0 600 650">
+                <!-- Knowledge Infrastructure Diagram -->
+                <g class="node" transform="translate(300, 50)" id="knowledge-infrastructure">
+                    <rect class="clickable-node" x="-150" y="-25" width="300" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Knowledge Infrastructure</text>
+                </g>
+
+                <g class="node" transform="translate(150, 130)" id="vector-database-system">
+                    <rect style="fill: #023047;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Vector Database System</text>
+                </g>
+
+                <g class="node" transform="translate(450, 130)" id="query-system">
+                    <rect style="fill: #023047;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Query System</text>
+                </g>
+
+                <g class="node" transform="translate(300, 210)" id="document-processing">
+                    <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Document Processing</text>
+                </g>
+
+                <g class="node" transform="translate(150, 290)" id="embedding-generation">
+                    <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Embedding Generation</text>
+                </g>
+
+                <g class="node" transform="translate(450, 290)" id="semantic-search">
+                    <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Semantic Search</text>
+                </g>
+
+                <g class="node" transform="translate(300, 370)" id="rag-integration">
+                    <rect style="fill: #219ebc;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">RAG Integration</text>
+                </g>
+
+                <g class="node" transform="translate(300, 450)" id="llm-context-provision">
+                    <rect style="fill: #8ecae6;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="dark-text">LLM Context Provision</text>
+                </g>
+
+                <g class="node" transform="translate(300, 530)" id="model-query-responses">
+                    <rect style="fill: #8ecae6;" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="dark-text">Model Query Responses</text>
+                </g>
+
+                <!-- Return Button -->
+                <g class="node clickable" data-return="true" transform="translate(300, 600)">
+                    <rect class="main-node" x="-100" y="-25" width="200" height="50" rx="5" ry="5"></rect>
+                    <text class="white-text">Return to Main View</text>
+                </g>
+
+                <!-- Edges -->
+                <g class="links">
+                    <line class="link" x1="300" y1="75" x2="200" y2="105"></line>
+                    <polygon points="200,105 204,97 196,97" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="75" x2="400" y2="105"></line>
+                    <polygon points="400,105 396,97 404,97" fill="#666"></polygon>
+
+                    <line class="link" x1="200" y1="155" x2="250" y2="185"></line>
+                    <polygon points="250,185 246,177 254,177" fill="#666"></polygon>
+
+                    <line class="link" x1="400" y1="155" x2="350" y2="185"></line>
+                    <polygon points="350,185 354,177 346,177" fill="#666"></polygon>
+
+                    <line class="link" x1="250" y1="235" x2="200" y2="265"></line>
+                    <polygon points="200,265 204,257 196,257" fill="#666"></polygon>
+
+                    <line class="link" x1="350" y1="235" x2="400" y2="265"></line>
+                    <polygon points="400,265 396,257 404,257" fill="#666"></polygon>
+
+                    <line class="link" x1="200" y1="315" x2="250" y2="345"></line>
+                    <polygon points="250,345 246,337 254,337" fill="#666"></polygon>
+
+                    <line class="link" x1="400" y1="315" x2="350" y2="345"></line>
+                    <polygon points="350,345 354,337 346,337" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="395" x2="300" y2="425"></line>
+                    <polygon points="300,425 296,417 304,417" fill="#666"></polygon>
+
+                    <line class="link" x1="300" y1="475" x2="300" y2="505"></line>
+                    <polygon points="300,505 296,497 304,497" fill="#666"></polygon>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        // Simple vanilla JavaScript to handle view switching
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainView = document.getElementById('main-view');
+            const llmView = document.getElementById('llm-view');
+            const knowledgeView = document.getElementById('knowledge-view');
+            const backBtn = document.getElementById('back-btn');
+
+            // Create floating containers for each view
+            const views = ['main-view', 'llm-view', 'knowledge-view'];
+            views.forEach(viewId => {
+                const container = document.createElement('div');
+                container.id = `floating-text-container-${viewId}`;
+                container.className = 'expandable-text-container';
+                document.getElementById(viewId).insertBefore(container, document.getElementById(viewId).firstChild);
+            });
+
+            // Function to get the floating container for the current view
+            function getCurrentFloatingContainer() {
+                if (!mainView.classList.contains('hidden')) {
+                    return document.getElementById('floating-text-container-main-view');
+                } else if (!llmView.classList.contains('hidden')) {
+                    return document.getElementById('floating-text-container-llm-view');
+                } else {
+                    return document.getElementById('floating-text-container-knowledge-view');
+                }
+            }
+
+            // Function to handle component click
+            async function handleComponentClick(component) {
+                const floatingContainer = getCurrentFloatingContainer();
+                const existingText = floatingContainer.querySelector('.expandable-text');
+                if (existingText) {
+                    existingText.remove();
+                }
+
+                // Strip 'main-' prefix if present for content lookup
+                const contentId = component.id.replace('main-', '');
+                const content = await loadComponentDescription(contentId);
+
+                if (content) {
+                    const header = contentId.split('-').map(word => 
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                    ).join(' ');
+                    showFloatingText(floatingContainer, content, header);
+
+                    const rect = component.getBoundingClientRect();
+                    floatingContainer.style.left = (rect.left - 25) + 'px';
+                    floatingContainer.style.top = (rect.top - 220) + 'px';
+                }
+            }
+
+            function showFloatingText(container, text, header) {
+                // Hide any visible floating text first with animation
+                hideAllFloatingText();
+                
+                const expandableText = container.querySelector('.expandable-text') || createExpandableText(container);
+                expandableText.innerHTML = `
+                    <div class="expandable-text-header">${header}</div>
+                    <div class="expandable-text-content">${text}</div>
+                `;
+                
+                // Trigger reflow to ensure animations work
+                void container.offsetWidth;
+                
+                // Show container first
+                container.classList.add('visible');
+                
+                // Add visible class to text with slight delay for smooth animation
+                requestAnimationFrame(() => {
+                    expandableText.classList.add('visible');
+                });
+            }
+
+            function hideAllFloatingText() {
+                const containers = document.querySelectorAll('.expandable-text-container');
+                containers.forEach(container => {
+                    const expandableText = container.querySelector('.expandable-text');
+                    if (expandableText) {
+                        expandableText.classList.remove('visible');
+                        // Wait for text animation to complete before hiding container
+                        setTimeout(() => {
+                            container.classList.remove('visible');
+                        }, 300); // Match the CSS transition duration
+                    }
+                });
+            }
+
+            function createExpandableText(container) {
+                const expandableText = document.createElement('div');
+                expandableText.className = 'expandable-text';
+                container.appendChild(expandableText);
+                return expandableText;
+            }
+
+            // Add click handlers for all views
+            views.forEach(viewId => {
+                const nodes = document.querySelectorAll(`#${viewId} .node[id]`);
+                nodes.forEach(node => {
+                    if (!node.hasAttribute('data-return')) { // Skip return buttons
+                        node.addEventListener('click', function(e) {
+                            if (!this.hasAttribute('data-view')) { // Only show popup if not a view switcher
+                                e.stopPropagation();
+                                handleComponentClick(this);
+                                sendMessageToParent(this.id.replace('main-', ''));
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Close expandable text when clicking elsewhere
+            document.addEventListener('click', function(e) {
+                views.forEach(viewId => {
+                    const container = document.getElementById(`floating-text-container-${viewId}`);
+                    const expandableText = container.querySelector('.expandable-text');
+                    if (expandableText && !e.target.closest('.node')) {
+                        expandableText.classList.remove('visible');
+                        setTimeout(() => expandableText.remove(), 300);
+                    }
+                });
+            });
+
+            // Original view switching logic
+            const clickableNodes = document.querySelectorAll('.node.clickable');
+            clickableNodes.forEach(node => {
+                node.addEventListener('click', function() {
+                    const viewToShow = this.getAttribute('data-view');
+                    const shouldReturn = this.getAttribute('data-return');
+
+                    if (shouldReturn) {
+                        mainView.classList.remove('hidden');
+                        llmView.classList.add('hidden');
+                        knowledgeView.classList.add('hidden');
+                        backBtn.style.display = 'none';
+                    } else if (viewToShow) {
+                        mainView.classList.add('hidden');
+                        llmView.classList.add('hidden');
+                        knowledgeView.classList.add('hidden');
+                        document.getElementById(viewToShow).classList.remove('hidden');
+                        backBtn.style.display = 'block';
+
+                        sendMessageToParent(viewToShow);
+                    }
+                });
+            });
+
+            // Back button functionality
+            backBtn.addEventListener('click', function() {
+                mainView.classList.remove('hidden');
+                llmView.classList.add('hidden');
+                knowledgeView.classList.add('hidden');
+                backBtn.style.display = 'none';
+
+                // Send message to parent to scroll back to the main diagram section
+                sendMessageToParent('main');
+            });
+
+            // Function to send messages to the parent page
+            function sendMessageToParent(componentId) {
+                // Map view IDs to component names that match the markdown headings
+                const componentMap = {
+                    'llm-view': '3-multi-llm-orchestration-to-implement',
+                    'knowledge-view': '2-vector-database-integration-to-implement',
+                    'input-view': '1-input-processing-implemented',
+                    'research-view': '4-research-generation-to-implement',
+                    'content-view': '5-content-assembly-to-implement',
+                    'main': 'interactive-diagram',
+                    'research-problem': 'research-problem',
+                    'research-pipeline': 'research-pipeline',
+                    'llm-orchestration-layer': '3-multi-llm-orchestration-to-implement',
+                    'research-template': 'research-template',
+                    'deep-research-model': 'deep-research-model',
+                    'knowledge-infrastructure': '2-vector-database-integration-to-implement',
+                    'augmented-research-composition': 'augmented-research-composition',
+                    'final-research-output': 'final-research-output'
+                };
+
+                // Get the mapped component name or use the original if not found
+                const mappedComponent = componentMap[componentId] || componentId;
+
+                // Log the message being sent (for debugging)
+                console.log('Sending message to parent:', mappedComponent);
+
+                // Send the message to the parent window
+                window.parent.postMessage({
+                    type: 'componentClick',
+                    componentId: mappedComponent
+                }, '*');
+            }
+
+            // Notify parent that diagram is loaded
+            window.parent.postMessage({
+                type: 'diagramLoaded'
+            }, '*');
+        });
+
+        // Function to load component description from diagram.md
+        async function loadComponentDescription(componentId) {
+            try {
+                const response = await fetch('/tech-projects/projects/epistemic-task-assign/diagram.md');
+                if (!response.ok) {
+                    throw new Error('Failed to load diagram.md');
+                }
+
+                const markdown = await response.text();
+                const sections = markdown.split('\n## ');
+
+                for (const section of sections) {
+                    if (section.trim().toLowerCase().startsWith(componentId.toLowerCase())) {
+                        const content = section.split('\n').slice(1).join('\n'); // Remove the header
+                        return content;
+                    }
+                }
+                return null;
+            } catch (error) {
+                console.error('Error loading component description:', error);
+                return null;
+            }
+        }
+    </script>
+</body>
+</html>

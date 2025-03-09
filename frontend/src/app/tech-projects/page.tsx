@@ -103,6 +103,7 @@ export default function TechProjects() {
         <div className="grid gap-8">
           {projects.map((project, index) => (
             <Card
+              key={project.slug}
               className={`relative overflow-hidden
                 backdrop-blur-sm
                 bg-white/80 dark:bg-[#112240]/80

@@ -123,7 +123,21 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
             </h2>
             <div 
               className="prose prose-lg max-w-none dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: project.content }}
+              dangerouslySetInnerHTML={{ 
+                __html: project.content.replace(
+                  /<img([^>]*?)src="([^"]*?\.svg)"([^>]*?)>/g,
+                  (match, before, src, after) => `
+                    <object
+                      type="image/svg+xml"
+                      data="${src}"
+                      className="w-full h-auto"
+                      ${before} ${after}
+                    >
+                      <img src="${src}" ${before} ${after} />
+                    </object>
+                  `
+                )
+              }}
             />
           </Card>
 
